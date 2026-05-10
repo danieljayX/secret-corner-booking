@@ -164,7 +164,47 @@ export function BookingProvider({ children }) {
 
   const [myBookings, setMyBookings] = useState(() => {
     const saved = localStorage.getItem('myBookings');
-    return saved ? JSON.parse(saved) : [];
+    if (saved) return JSON.parse(saved);
+    
+    // Default dummy data matching the user's design image
+    return [
+      {
+        id: 1,
+        customerName: 'Juan Dela Cruz',
+        eventName: 'Beach Resort',
+        packageName: 'MOBILE BAR: PREMIUM',
+        packagePrice: 14999,
+        location: 'Beach Resort, Mactan',
+        date: '2024-05-20',
+        time: '14:00',
+        status: 'Confirmed',
+        customerPhone: '09123456789'
+      },
+      {
+        id: 2,
+        customerName: 'Maria Santos',
+        eventName: 'City Hotel',
+        packageName: 'COFFEE BAR: STANDARD',
+        packagePrice: 9999,
+        location: 'City Hotel, Cebu City',
+        date: '2024-05-21',
+        time: '15:00',
+        status: 'Pending',
+        customerPhone: '09223334444'
+      },
+      {
+        id: 3,
+        customerName: 'Robert Garcia',
+        eventName: 'Mountain Cabin',
+        packageName: 'PICA PICA: DELUXE',
+        packagePrice: 11999,
+        location: 'Mountain Cabin, Busay',
+        date: '2024-05-18',
+        time: '11:00',
+        status: 'Declined',
+        customerPhone: '09445556666'
+      }
+    ];
   });
 
   useEffect(() => {

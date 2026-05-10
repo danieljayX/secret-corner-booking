@@ -8,36 +8,35 @@ export default function Navbar() {
   const location = useLocation();
 
   const navItems = [
-    { to: "/", icon: Home, label: "Home" },
-    { to: "/booking", icon: Calendar, label: "Book" },
-    { to: "/tickets", icon: ClipboardList, label: "Tickets", badge: myBookings.length },
+    { to: "/", icon: Home, label: "Home", activeColor: 'text-pink-500' },
+    { to: "/booking", icon: Calendar, label: "Book", badge: 1, activeColor: 'text-cyan-400' },
+    { to: "/tickets", icon: ClipboardList, label: "Tickets", activeColor: 'text-white' },
   ];
 
   return (
-    <nav className="h-20 bg-[#050505]/80 backdrop-blur-xl border-t border-white/5 flex items-center justify-around px-4 relative z-50">
+    <nav className="h-20 bg-black border-t border-white/5 flex items-center justify-around px-4 relative z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
       {navItems.map((item) => {
         const Icon = item.icon;
-        const isActive = location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(item.to));
+        const isExact = location.pathname === item.to;
+        const isActive = isExact || (item.to !== '/' && location.pathname.startsWith(item.to));
         
         return (
           <NavLink
             key={item.to}
             to={item.to}
-            className={({ isActive: linkActive }) => 
-              `flex flex-col items-center justify-center gap-1 transition-all duration-300 relative group ${
-                linkActive || isActive ? 'text-violet-400' : 'text-gray-600 hover:text-gray-400'
-              }`
-            }
+            className="flex flex-col items-center justify-center gap-1 transition-all duration-300 relative group"
           >
-            <div className={`p-2 rounded-xl transition-all duration-300 ${
-              isActive ? 'bg-violet-500/10 shadow-[0_0_20px_rgba(139,92,246,0.15)]' : 'group-hover:bg-white/5'
+            <div className={`p-2 transition-all duration-300 ${
+              isActive ? item.activeColor : 'text-gray-600'
             }`}>
-              <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+              <Icon size={26} strokeWidth={2.5} />
             </div>
-            <span className="text-[9px] font-black uppercase tracking-widest">{item.label}</span>
+            <span className={`text-[9px] font-black uppercase tracking-widest ${isActive ? 'opacity-100' : 'opacity-40 text-gray-700'}`}>
+              {item.label}
+            </span>
             
             {item.badge > 0 && (
-              <span className="absolute top-1 right-1 bg-cyan-500 text-[8px] font-black text-black px-1.5 py-0.5 rounded-full min-w-[16px] text-center border-2 border-[#050505]">
+              <span className="absolute top-1 right-2 bg-cyan-400 text-[10px] font-black text-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center border-2 border-black animate-pulse shadow-[0_0_10px_rgba(34,211,238,0.5)]">
                 {item.badge}
               </span>
             )}
