@@ -52,6 +52,11 @@ function App() {
                 <Route index element={<Admin defaultTab="bookings" />} />
                 <Route path="packages" element={<Admin defaultTab="packages" />} />
                 <Route path="calendar" element={<Admin defaultTab="calendar" />} />
+                <Route path="chat" element={<Admin defaultTab="chat" />} />
+                <Route path="analytics" element={<Admin defaultTab="analytics" />} />
+                <Route path="customers" element={<Admin defaultTab="customers" />} />
+                <Route path="settings" element={<Admin defaultTab="settings" />} />
+                <Route path="help" element={<Admin defaultTab="help" />} />
               </Route>
               
               {/* Catch all */}

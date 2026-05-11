@@ -1,75 +1,82 @@
 @import "tailwindcss";
 
 @theme {
+  --font-jakarta: 'Plus Jakarta Sans', sans-serif;
   --font-outfit: 'Outfit', sans-serif;
-  --color-violet-500: #8B5CF6;
-  --color-violet-600: #7C3AED;
-  --color-cyan-400: #22D3EE;
-  --color-cyan-500: #06B6D4;
 }
 
 body {
   margin: 0;
-  font-family: 'Outfit', sans-serif;
-  background-color: #030014; /* Deep Space Black */
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #030014;
   color: #ffffff;
   -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+/* Base Styles */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #030014;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e1b4b;
+  background: rgba(99, 102, 241, 0.2);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #8B5CF6;
+  background: rgba(99, 102, 241, 0.5);
 }
 
-/* Neon Text Glow */
-.neon-text {
-  text-shadow: 0 0 10px rgba(139, 92, 246, 0.4), 0 0 20px rgba(139, 92, 246, 0.2);
+/* Premium Typography Utility */
+.label-premium {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #64748b;
 }
 
-/* Calendar Styling (Dark) */
+/* Calendar Styling (Premium) */
 .react-calendar {
   background: transparent !important;
   border: none !important;
   width: 100% !important;
-  color: white !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 .react-calendar__tile {
-  padding: 1.2em 0.5em !important;
-  color: #94a3b8 !important;
+  padding: 1.5em 0.5em !important;
   font-weight: 700 !important;
-  border-radius: 12px !important;
-}
-.react-calendar__tile--now {
-  background: rgba(255, 255, 255, 0.05) !important;
-  color: white !important;
+  font-size: 13px !important;
+  border-radius: 16px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .react-calendar__tile--active {
-  background: #8B5CF6 !important;
-  color: white !important;
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4) !important;
+  background: #6366f1 !important;
+  box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4) !important;
 }
-.react-calendar__tile:enabled:hover {
-  background: rgba(139, 92, 246, 0.1) !important;
-  color: #8B5CF6 !important;
-}
-.react-calendar__navigation button {
-  color: white !important;
-  font-weight: 900 !important;
-  text-transform: uppercase !important;
-}
-.react-calendar__month-view__weekdays__weekday {
-  color: #4b5563 !important;
-  font-size: 10px !important;
-  text-transform: uppercase !important;
-  text-decoration: none !important;
+.booked-date {
+  background: rgba(16, 185, 129, 0.1) !important;
+  color: #10b981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.2) !important;
 }
