@@ -1,4 +1,4 @@
-import { Home, Calendar, ClipboardList } from 'lucide-react';
+import { Home, Calendar, ClipboardList, Info } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import { BookingContext } from '../context/BookingContext';
@@ -11,8 +11,9 @@ export default function Navbar() {
 
   const navItems = [
     { to: "/services", icon: Home, label: "Services", activeColorDark: 'text-pink-500', activeColorLight: 'text-pink-600' },
-    { to: "/booking", icon: Calendar, label: "Book", badge: 1, activeColorDark: 'text-cyan-400', activeColorLight: 'text-indigo-600' },
+    { to: "/booking", icon: Calendar, label: "Book", activeColorDark: 'text-cyan-400', activeColorLight: 'text-indigo-600' },
     { to: "/tickets", icon: ClipboardList, label: "Tickets", activeColorDark: 'text-white', activeColorLight: 'text-gray-900' },
+    { to: "/about", icon: Info, label: "About", activeColorDark: 'text-violet-400', activeColorLight: 'text-violet-600' },
   ];
 
   const navBg = isDarkMode ? 'bg-black border-white/5' : 'bg-white border-gray-100 shadow-[0_-10px_40px_rgba(0,0,0,0.03)]';

@@ -8,8 +8,10 @@ import AdminLayout from './layouts/AdminLayout';
 import Home from './pages/Home';
 import Landing from './pages/Landing';
 import PackageDetails from './pages/PackageDetails';
-import Booking from './pages/Booking'; // Fixed import
+import Booking from './pages/Booking';
 import MyBookings from './pages/MyBookings';
+import About from './pages/About';
+import OrderConfirmation from './pages/OrderConfirmation';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
 
@@ -38,7 +40,8 @@ function App() {
                 <Route path="/checkout" element={<Booking />} />
                 <Route path="/tickets" element={<MyBookings />} />
                 <Route path="/my-bookings" element={<MyBookings />} />
-                <Route path="/confirmation" element={<MyBookings />} />
+                <Route path="/confirmation" element={<OrderConfirmation />} />
+                <Route path="/about" element={<About />} />
                 <Route path="/login" element={<Login />} />
               </Route>
 

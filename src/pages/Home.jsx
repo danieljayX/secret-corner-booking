@@ -176,6 +176,39 @@ export default function Home() {
               ))}
             </div>
           </div>
+
+          {/* Photo Gallery */}
+          <div className="px-5 pt-2 pb-4 space-y-3">
+            <div className="flex items-center justify-between ml-1">
+              <h2 className={`text-[15px] font-black tracking-tight ${sectionLabel}`}>📸 Our Work</h2>
+              <span className={`text-[10px] font-black uppercase tracking-widest ${isDarkMode ? 'text-pink-400' : 'text-pink-500'}`}>Gallery</span>
+            </div>
+
+            {/* Grid Gallery */}
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { url: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=400&q=80', tall: true },
+                { url: 'https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=400&q=80', tall: false },
+                { url: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=400&q=80', tall: false },
+                { url: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=400&q=80', tall: false },
+                { url: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=400&q=80', tall: true },
+                { url: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=400&q=80', tall: false },
+              ].map((photo, i) => (
+                <div
+                  key={i}
+                  className={`rounded-2xl overflow-hidden ${photo.tall ? 'row-span-2' : ''} ${i === 0 ? 'col-span-1 row-span-2' : ''}`}
+                  style={{ height: photo.tall ? '180px' : '86px' }}
+                >
+                  <img
+                    src={photo.url}
+                    alt={`Gallery ${i + 1}`}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
       ) : (

@@ -237,17 +237,60 @@ export default function Admin({ defaultTab = 'bookings' }) {
              </div>
           </div>
 
+          {/* Search + Filter */}
+          <div className="space-y-3">
+            <div className={`flex items-center gap-3 px-4 py-3 rounded-2xl border ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100 shadow-sm'}`}>
+              <Search size={16} className="text-slate-400 shrink-0" />
+              <input
+                type="text"
+                placeholder="Search by name or package..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className={`flex-1 text-sm font-medium bg-transparent outline-none placeholder-slate-400 ${isDarkMode ? 'text-white' : 'text-slate-800'}`}
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="text-slate-400 hover:text-slate-600">
+                  <X size={15} />
+                </button>
+              )}
+            </div>
+
+            {/* Status Filter Tabs */}
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+              {['All', 'Pending', 'Confirmed', 'Declined'].map(status => (
+                <button
+                  key={status}
+                  onClick={() => setFilterStatus(status)}
+                  className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${
+                    filterStatus === status
+                      ? (status === 'Pending' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30'
+                        : status === 'Confirmed' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                        : status === 'Declined' ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/30'
+                        : 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30')
+                      : (isDarkMode ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500')
+                  }`}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Recent Bookings Section */}
           <div className="space-y-4">
              <div className="flex items-center justify-between ml-1">
-                <h3 className={`text-lg font-black ${textColor}`}>Recent Bookings</h3>
-                <button className={`text-[14px] font-bold ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`} onClick={() => setActiveTab('bookings')}>View all</button>
+                <h3 className={`text-lg font-black ${textColor}`}>
+                  {filterStatus === 'All' ? 'All Bookings' : `${filterStatus} Bookings`}
+                  <span className={`ml-2 text-[11px] font-black px-2 py-0.5 rounded-full ${isDarkMode ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>
+                    {filteredBookings.length}
+                  </span>
+                </h3>
              </div>
              <div className={`rounded-[32px] p-6 shadow-sm border transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-50'}`}>
-                {myBookings.length === 0 ? (
+                {filteredBookings.length === 0 ? (
                   <p className={`text-center py-6 text-sm font-medium ${isDarkMode ? 'text-slate-600' : 'text-slate-400'}`}>No bookings found</p>
                 ) : (
-                  myBookings.slice(0, 3).map((booking) => (
+                  filteredBookings.map((booking) => (
                     <MobileBookingItem key={booking.id} booking={booking} onClick={() => setSelectedBooking(booking)} isDarkMode={isDarkMode} />
                   ))
                 )}
