@@ -59,25 +59,24 @@ const StatCard = ({ title, value, icon: Icon, color, bg, trend, isDarkMode }) =>
 };
 
 const MobileStatCard = ({ title, value, icon: Icon, color, trend, bg, isDarkMode }) => (
-  <div className={`rounded-[32px] p-5 border shadow-sm flex items-start gap-4 transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
-    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${bg} ${color} shrink-0 shadow-inner`}>
-      <Icon size={24} />
-    </div>
-    <div className="flex-1">
-      <p className={`text-[10px] font-black uppercase tracking-[0.15em] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{title}</p>
-      <h4 className={`text-2xl font-black mt-1 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{value}</h4>
-      <div className="flex items-center gap-1 mt-1.5">
-        {trend > 0 ? (
-          <span className="text-[10px] font-black text-emerald-500 flex items-center gap-0.5">
-            <TrendingUp size={10} /> {trend}%
-          </span>
-        ) : (
-          <span className="text-[10px] font-black text-rose-500 flex items-center gap-0.5">
-            <TrendingDown size={10} /> {Math.abs(trend)}%
-          </span>
-        )}
-        <span className={`text-[10px] font-bold ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>vs last month</span>
+  <div className={`rounded-[24px] p-4 border shadow-sm flex flex-col gap-2 transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
+    <div className="flex items-center justify-between">
+      <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${bg} ${color} shrink-0`}>
+        <Icon size={18} />
       </div>
+      {trend > 0 ? (
+        <span className="text-[10px] font-black text-emerald-500 flex items-center gap-0.5">
+          <TrendingUp size={10} /> {trend}%
+        </span>
+      ) : (
+        <span className="text-[10px] font-black text-rose-500 flex items-center gap-0.5">
+          <TrendingDown size={10} /> {Math.abs(trend)}%
+        </span>
+      )}
+    </div>
+    <div>
+      <h4 className={`text-[22px] font-black leading-none ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{value}</h4>
+      <p className={`text-[9px] font-black uppercase tracking-[0.1em] mt-1 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{title}</p>
     </div>
   </div>
 );
@@ -206,7 +205,7 @@ export default function Admin({ defaultTab = 'bookings' }) {
   const textColor = isDarkMode ? 'text-slate-100' : 'text-slate-900';
 
   return (
-    <div className={`max-w-7xl mx-auto pb-24 font-['Plus_Jakarta_Sans',_sans-serif] transition-colors duration-500 min-h-screen ${bg} ${textColor}`}>
+    <div className={`max-w-7xl mx-auto pb-24 font-['Plus_Jakarta_Sans',_sans-serif] transition-colors duration-500 min-h-screen overflow-x-hidden ${bg} ${textColor}`}>
       
       {/* ── MOBILE DASHBOARD TAB ── */}
       {activeTab === 'bookings' && (

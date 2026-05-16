@@ -23,7 +23,7 @@ export default function Checkout() {
         </div>
         <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-wide transition-colors">No Booking Started</h2>
         <p className="text-gray-500 dark:text-gray-400 mb-8 font-medium transition-colors">Please select a package and date first.</p>
-        <button onClick={() => navigate('/')} className="bg-pink-600 dark:bg-pink-500 text-white px-8 py-4 rounded-full font-bold shadow-md dark:shadow-[0_0_20px_rgba(236,72,153,0.4)] hover:scale-105 transition-all">
+        <button onClick={() => navigate('/services')} className="bg-pink-600 dark:bg-pink-500 text-white px-8 py-4 rounded-full font-bold shadow-md dark:shadow-[0_0_20px_rgba(236,72,153,0.4)] hover:scale-105 transition-all">
           View Packages
         </button>
       </div>

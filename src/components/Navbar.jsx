@@ -10,7 +10,7 @@ export default function Navbar() {
   const location = useLocation();
 
   const navItems = [
-    { to: "/", icon: Home, label: "Home", activeColorDark: 'text-pink-500', activeColorLight: 'text-pink-600' },
+    { to: "/services", icon: Home, label: "Services", activeColorDark: 'text-pink-500', activeColorLight: 'text-pink-600' },
     { to: "/booking", icon: Calendar, label: "Book", badge: 1, activeColorDark: 'text-cyan-400', activeColorLight: 'text-indigo-600' },
     { to: "/tickets", icon: ClipboardList, label: "Tickets", activeColorDark: 'text-white', activeColorLight: 'text-gray-900' },
   ];

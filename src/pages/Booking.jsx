@@ -21,7 +21,7 @@ export default function Booking() {
 
   useEffect(() => {
     if (!currentBooking && window.location.pathname === '/booking') {
-      navigate('/');
+      navigate('/services');
     }
     window.scrollTo(0, 0);
   }, [currentBooking, navigate]);

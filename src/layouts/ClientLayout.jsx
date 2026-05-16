@@ -1,10 +1,11 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useContext } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
 
 export default function ClientLayout() {
   const { isDarkMode } = useContext(ThemeContext);
+  const location = useLocation();
   
   const bg = isDarkMode ? 'bg-[#030014]' : 'bg-[#F5F3FF]';
   const containerBg = isDarkMode ? 'bg-[#030014]' : 'bg-white';
@@ -29,7 +30,7 @@ export default function ClientLayout() {
         </div>
         
         {/* Fixed Navbar at the bottom */}
-        <Navbar />
+        {location.pathname !== '/' && <Navbar />}
       </div>
     </div>
   );

@@ -69,68 +69,67 @@ export default function Home() {
         <div className="animate-in fade-in duration-700">
 
           {/* Header Section */}
-          <div className="px-8 pt-12 pb-10 flex flex-col items-center relative">
+          <div className="px-6 pt-8 pb-6 flex flex-col items-center relative">
 
             {/* Theme Toggle */}
-            <div className="absolute top-8 right-8">
+            <div className="absolute top-6 right-6">
               <button
                 onClick={toggleTheme}
-                className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95
+                className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95
                   ${isDarkMode
                     ? 'bg-white/5 border-white/10 text-yellow-400 hover:bg-white/10'
                     : 'bg-white border-gray-200 text-indigo-500 hover:bg-indigo-50 shadow-sm'}`}
               >
-                {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
               </button>
             </div>
 
             {/* Logo Circle */}
-            <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 border transition-all duration-300
+            <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 border transition-all duration-300
               ${isDarkMode
-                ? 'bg-black shadow-[0_0_40px_rgba(236,72,153,0.3)] border-white/5'
-                : 'bg-white shadow-[0_8px_30px_rgba(236,72,153,0.2)] border-pink-100'}`}>
-              <Martini size={36} className="text-pink-500" strokeWidth={1.5} />
+                ? 'bg-black shadow-[0_0_30px_rgba(236,72,153,0.3)] border-white/5'
+                : 'bg-white shadow-[0_6px_20px_rgba(236,72,153,0.2)] border-pink-100'}`}>
+              <Martini size={26} className="text-pink-500" strokeWidth={1.5} />
             </div>
 
             {/* Title */}
-            <h1 className={`text-[42px] font-black tracking-wider leading-none text-center transition-colors duration-300
+            <h1 className={`text-[28px] font-black tracking-wider leading-none text-center transition-colors duration-300
               ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              SECRET<br />
-              <span className={isDarkMode ? 'text-white/90' : 'text-gray-700'}>CORNER</span>
+              SECRET <span className={isDarkMode ? 'text-white/90' : 'text-gray-700'}>CORNER</span>
             </h1>
 
             {/* Events Tag */}
-            <div className="flex items-center gap-4 mt-2">
-              <div className="w-8 h-[1px] bg-gradient-to-r from-transparent to-pink-500"></div>
-              <span className="text-[12px] font-black text-pink-500 tracking-[0.4em] uppercase">Events</span>
-              <div className="w-8 h-[1px] bg-gradient-to-l from-transparent to-pink-500"></div>
+            <div className="flex items-center gap-3 mt-1.5">
+              <div className="w-6 h-[1px] bg-gradient-to-r from-transparent to-pink-500"></div>
+              <span className="text-[10px] font-black text-pink-500 tracking-[0.4em] uppercase">Events</span>
+              <div className="w-6 h-[1px] bg-gradient-to-l from-transparent to-pink-500"></div>
             </div>
 
             {/* Capsule Tagline */}
-            <div className={`mt-10 px-6 py-3 rounded-full flex items-center gap-3 shadow-lg border transition-all duration-300
+            <div className={`mt-5 px-4 py-2 rounded-full flex items-center gap-2 shadow border transition-all duration-300
               ${isDarkMode
                 ? 'bg-[#1a1a1a] border-white/10'
-                : 'bg-white border-gray-200 shadow-[0_4px_20px_rgba(0,0,0,0.08)]'}`}>
-              <Sparkles size={16} className="text-yellow-500" />
-              <span className={`text-[12px] font-bold ${isDarkMode ? 'text-white/80' : 'text-gray-700'}`}>
+                : 'bg-white border-gray-200 shadow-[0_4px_14px_rgba(0,0,0,0.06)]'}`}>
+              <Sparkles size={13} className="text-yellow-500" />
+              <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/80' : 'text-gray-700'}`}>
                 Your Event. Our Perfect Setup.
               </span>
             </div>
           </div>
 
           {/* Services Section */}
-          <div className="px-6 space-y-6">
-            <h2 className={`text-xl font-black ml-2 tracking-tight ${sectionLabel}`}>Our Services</h2>
+          <div className="px-5 space-y-3">
+            <h2 className={`text-[15px] font-black ml-1 tracking-tight ${sectionLabel}`}>Our Services</h2>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {categories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`w-full group relative overflow-hidden rounded-[2.5rem] h-44 transition-all duration-500 hover:scale-[1.02] active:scale-95 shadow-xl border
+                  className={`w-full group relative overflow-hidden rounded-[1.8rem] h-[88px] transition-all duration-500 hover:scale-[1.02] active:scale-95 shadow-lg border
                     ${isDarkMode
                       ? 'bg-black border-white/5'
-                      : `bg-white ${cat.accentLight} shadow-[0_8px_30px_rgba(0,0,0,0.1)]`}`}
+                      : `bg-white ${cat.accentLight} shadow-[0_4px_20px_rgba(0,0,0,0.08)]`}`}
                 >
                   {/* Background Image */}
                   <div className="absolute inset-0">
@@ -142,41 +141,35 @@ export default function Home() {
                           : 'opacity-20 group-hover:opacity-30'}`}
                       alt={cat.title}
                     />
-                    <div className={`absolute inset-0 
+                    <div className={`absolute inset-0
                       ${isDarkMode
                         ? 'bg-gradient-to-t from-black via-black/40 to-transparent'
                         : 'bg-gradient-to-t from-white/90 via-white/50 to-transparent'}`}>
                     </div>
-                    {/* Neon/Soft Circle Effect */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                      <div className={`w-32 h-32 rounded-full border-2 blur-sm
-                        ${isDarkMode ? cat.iconColor.replace('text', 'border') : cat.accentLight}`}>
-                      </div>
-                    </div>
                   </div>
 
                   {/* Content */}
-                  <div className="absolute inset-0 p-8 flex items-center gap-6">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border shadow-lg transition-all duration-300
+                  <div className="absolute inset-0 px-5 flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow transition-all duration-300
                       ${isDarkMode
                         ? `${cat.iconBgDark} ${cat.iconColor} border-white/10`
                         : `${cat.iconBgLight} ${cat.iconColorLight} ${cat.accentLight}`}`}>
-                      <cat.icon size={28} />
+                      <cat.icon size={20} />
                     </div>
                     <div className="text-left">
-                      <h3 className={`text-2xl font-black uppercase tracking-[0.05em] leading-none mb-1.5 italic
+                      <h3 className={`text-[16px] font-black uppercase tracking-[0.05em] leading-none mb-1 italic
                         ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         {cat.title}
                       </h3>
-                      <p className={`text-[13px] font-semibold ${isDarkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                      <p className={`text-[11px] font-semibold ${isDarkMode ? 'text-white/60' : 'text-gray-500'}`}>
                         {cat.subtitle}
                       </p>
                     </div>
-                    <div className={`ml-auto w-10 h-10 rounded-full border flex items-center justify-center transition-all
+                    <div className={`ml-auto w-8 h-8 rounded-full border flex items-center justify-center transition-all
                       ${isDarkMode
                         ? 'bg-white/10 border-white/20 text-white/80 group-hover:bg-white/20'
                         : 'bg-gray-50 border-gray-200 text-gray-500 group-hover:bg-pink-50 group-hover:border-pink-200 group-hover:text-pink-500'}`}>
-                      <ChevronRight size={20} />
+                      <ChevronRight size={16} />
                     </div>
                   </div>
                 </button>
@@ -187,57 +180,56 @@ export default function Home() {
 
       ) : (
         /* Package Listing View */
-        <div className="px-6 pt-12 animate-in slide-in-from-right duration-500">
+        <div className="px-5 pt-8 animate-in slide-in-from-right duration-500">
           <button
             onClick={() => setSelectedCategory(null)}
-            className={`mb-8 flex items-center gap-3 group transition-colors ${backBtnBg}`}
+            className={`mb-5 flex items-center gap-2 group transition-colors ${backBtnBg}`}
           >
-            <div className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all ${backBtnBg}`}>
-              <ChevronRight size={20} className="rotate-180" />
+            <div className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all ${backBtnBg}`}>
+              <ChevronRight size={16} className="rotate-180" />
             </div>
-            <span className="text-[11px] font-black uppercase tracking-widest">Back to Services</span>
+            <span className="text-[10px] font-black uppercase tracking-widest">Back to Services</span>
           </button>
 
-          <h2 className={`text-2xl font-black uppercase italic tracking-widest mb-8 px-2 ${headingColor}`}>
+          <h2 className={`text-[18px] font-black uppercase italic tracking-widest mb-5 px-1 ${headingColor}`}>
             {categories.find(c => c.id === selectedCategory)?.title} Packages
           </h2>
 
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 gap-4">
             {getActivePackages().map((pkg) => (
               <div
                 key={pkg.id}
                 onClick={() => navigate(`/package/${pkg.id}`)}
-                className={`group relative rounded-[3rem] p-10 transition-all duration-300 cursor-pointer shadow-xl overflow-hidden border
+                className={`group relative rounded-[2rem] p-6 transition-all duration-300 cursor-pointer shadow-lg overflow-hidden border
                   ${isDarkMode
                     ? 'bg-[#0a0a0f] border-white/5 hover:bg-white/5'
-                    : 'bg-white border-gray-100 hover:border-pink-100 hover:shadow-[0_8px_40px_rgba(236,72,153,0.12)]'}`}
+                    : 'bg-white border-gray-100 hover:border-pink-100 hover:shadow-[0_6px_30px_rgba(236,72,153,0.1)]'}`}
               >
-                {/* Glow / Accent Blob */}
-                <div className={`absolute -right-20 -top-20 w-60 h-60 ${pkg.bgClass} blur-[100px] ${isDarkMode ? 'opacity-20' : 'opacity-10'}`}></div>
+                <div className={`absolute -right-16 -top-16 w-44 h-44 ${pkg.bgClass} blur-[80px] ${isDarkMode ? 'opacity-20' : 'opacity-10'}`}></div>
 
                 <div className="relative z-10">
-                  <div className="flex justify-between items-start mb-8">
+                  <div className="flex justify-between items-start mb-5">
                     <div>
-                      <h3 className={`text-2xl font-black ${pkg.colorClass} uppercase italic tracking-widest leading-none mb-2`}>
+                      <h3 className={`text-lg font-black ${pkg.colorClass} uppercase italic tracking-widest leading-none mb-1.5`}>
                         {pkg.name}
                       </h3>
-                      <p className={`text-3xl font-black tracking-tight ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <p className={`text-2xl font-black tracking-tight ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         ₱{pkg.price.toLocaleString()}
                       </p>
                     </div>
-                    <div className={`w-14 h-14 rounded-[1.5rem] border flex items-center justify-center transition-all
+                    <div className={`w-10 h-10 rounded-[1.2rem] border flex items-center justify-center transition-all
                       ${isDarkMode
                         ? 'bg-white/5 border-white/10 text-gray-400 group-hover:text-white group-hover:bg-white/10'
                         : 'bg-gray-50 border-gray-200 text-gray-400 group-hover:bg-pink-50 group-hover:border-pink-200 group-hover:text-pink-500'}`}>
-                      <ChevronRight size={24} />
+                      <ChevronRight size={18} />
                     </div>
                   </div>
 
-                  <div className={`space-y-4 pt-8 border-t ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
+                  <div className={`space-y-2.5 pt-4 border-t ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
                     {pkg.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-4">
-                        <div className={`w-2 h-2 rounded-full ${pkg.bgClass.replace('/10', '')} shadow-[0_0_10px_currentColor]`}></div>
-                        <span className={`text-[12px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <div key={idx} className="flex items-center gap-3">
+                        <div className={`w-1.5 h-1.5 rounded-full ${pkg.bgClass.replace('/10', '')}`}></div>
+                        <span className={`text-[11px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                           {feature}
                         </span>
                       </div>

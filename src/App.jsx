@@ -6,6 +6,7 @@ import { useContext } from 'react';
 import ClientLayout from './layouts/ClientLayout';
 import AdminLayout from './layouts/AdminLayout';
 import Home from './pages/Home';
+import Landing from './pages/Landing';
 import PackageDetails from './pages/PackageDetails';
 import Booking from './pages/Booking'; // Fixed import
 import MyBookings from './pages/MyBookings';
@@ -30,7 +31,8 @@ function App() {
             <Routes>
               {/* Client Routes (Mobile View) */}
               <Route element={<ClientLayout />}>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Landing />} />
+                <Route path="/services" element={<Home />} />
                 <Route path="/package/:id" element={<PackageDetails />} />
                 <Route path="/booking" element={<Booking />} />
                 <Route path="/checkout" element={<Booking />} />

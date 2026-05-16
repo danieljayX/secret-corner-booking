@@ -92,7 +92,7 @@ export default function OrderConfirmation() {
           My Tickets <ArrowRight size={14} />
         </button>
         <button 
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/services')}
           className="w-full flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400 font-bold text-xs uppercase tracking-widest py-3 hover:text-pink-500 transition-colors"
         >
           <HomeIcon size={14} /> Back to Home

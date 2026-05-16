@@ -19,7 +19,7 @@ export default function Cart() {
         <h2 className="text-xl font-bold text-gray-800 mb-2">Your cart is empty</h2>
         <p className="text-gray-500 mb-8">Looks like you haven't added any food to your cart yet.</p>
         <button 
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/services')}
           className="bg-green-500 text-white font-semibold py-3 px-8 rounded-full hover:bg-green-600 transition"
         >
           Browse Food

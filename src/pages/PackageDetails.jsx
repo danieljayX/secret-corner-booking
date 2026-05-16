@@ -16,7 +16,7 @@ export default function PackageDetails() {
     <div className={`min-h-screen flex items-center justify-center p-10 text-center ${isDarkMode ? 'bg-[#030014] text-white' : 'bg-[#F5F3FF] text-gray-900'}`}>
       <div>
         <p className={`mb-4 uppercase tracking-widest font-black ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>Package Not Found</p>
-        <button onClick={() => navigate('/')} className={`${isDarkMode ? 'text-violet-400' : 'text-indigo-600'} font-black`}>Back to Home</button>
+        <button onClick={() => navigate('/services')} className={`${isDarkMode ? 'text-violet-400' : 'text-indigo-600'} font-black`}>Back to Home</button>
       </div>
     </div>
   );
