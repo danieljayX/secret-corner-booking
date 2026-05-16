@@ -36,7 +36,7 @@ export default function Booking() {
       ...currentBooking,
       ...formData
     });
-    navigate('/tickets');
+    navigate('/confirmation');
   };
 
   const isDateBooked = (date) => bookedDates.includes(date);

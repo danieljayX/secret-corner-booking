@@ -47,7 +47,7 @@ export default function OrderConfirmation() {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Package Selected</p>
-                  <p className="text-lg font-black text-gray-900 dark:text-white uppercase italic">{latestBooking.package_name}</p>
+                  <p className="text-lg font-black text-gray-900 dark:text-white uppercase italic">{latestBooking.packageName}</p>
                 </div>
               </div>
 
@@ -67,11 +67,11 @@ export default function OrderConfirmation() {
             <div className="mt-8 pt-8 border-t border-dashed border-gray-200 dark:border-white/10 flex justify-between items-end transition-colors">
               <div>
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Client</p>
-                <p className="text-sm font-black text-gray-900 dark:text-white uppercase">{latestBooking.name}</p>
+                <p className="text-sm font-black text-gray-900 dark:text-white uppercase">{latestBooking.customerName}</p>
               </div>
               <div className="text-right">
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Total Fee</p>
-                <p className="text-xl font-black text-pink-600 dark:text-pink-400">₱{latestBooking.price?.toLocaleString()}</p>
+                <p className="text-xl font-black text-pink-600 dark:text-pink-400">₱{latestBooking.packagePrice?.toLocaleString()}</p>
               </div>
             </div>
           </div>
