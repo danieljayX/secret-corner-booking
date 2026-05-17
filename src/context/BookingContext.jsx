@@ -179,7 +179,9 @@ export function BookingProvider({ children }) {
         time: '14:00',
         status: 'Confirmed',
         customerPhone: '09123456789',
-        socialLink: 'https://facebook.com/juandelacruz'
+        socialLink: 'https://facebook.com/juandelacruz',
+        paymentMethod: 'GCash',
+        referenceNumber: '7041234567890'
       },
       {
         id: 2,
@@ -192,7 +194,9 @@ export function BookingProvider({ children }) {
         time: '15:00',
         status: 'Pending',
         customerPhone: '09223334444',
-        socialLink: 'https://instagram.com/mariasantos'
+        socialLink: 'https://instagram.com/mariasantos',
+        paymentMethod: 'Maya',
+        referenceNumber: '5029876543210'
       },
       {
         id: 3,
@@ -205,7 +209,9 @@ export function BookingProvider({ children }) {
         time: '11:00',
         status: 'Declined',
         customerPhone: '09445556666',
-        socialLink: 'https://facebook.com/robertgarcia'
+        socialLink: 'https://facebook.com/robertgarcia',
+        paymentMethod: 'GCash',
+        referenceNumber: '7095555666677'
       }
     ];
   });

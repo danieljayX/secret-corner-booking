@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookingContext } from '../context/BookingContext';
 import { ThemeContext } from '../context/ThemeContext';
-import { ChevronLeft, Calendar as CalendarIcon, MapPin, User, ShieldCheck, ArrowRight, Globe } from 'lucide-react';
+import { ChevronLeft, Calendar as CalendarIcon, MapPin, User, ShieldCheck, ArrowRight, Globe, CreditCard } from 'lucide-react';
 
 export default function Booking() {
   const navigate = useNavigate();
@@ -17,6 +17,8 @@ export default function Booking() {
     customerName: '',
     customerPhone: '',
     socialLink: '',
+    paymentMethod: 'GCash',
+    referenceNumber: '',
     specialRequests: ''
   });
 
@@ -183,6 +185,64 @@ export default function Booking() {
                   className={`block w-full px-6 py-5 ${inputBg} rounded-[1.5rem] text-sm ${inputTextColor} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all`}
                 />
                 <p className="text-[10px] text-gray-400 px-2 italic font-medium leading-tight">🔒 We only check your public profile to confirm you are a real person. We will NEVER ask for your password.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* PAYMENT & RESERVATION FEE */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 ml-2">
+              <CreditCard size={16} className={isDarkMode ? 'text-emerald-400' : 'text-emerald-500'} />
+              <h3 className={`text-[11px] font-black uppercase tracking-[0.2em] ${sectionLabelColor}`}>4. Slot Reservation Fee</h3>
+            </div>
+            <div className={`${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300' : 'bg-emerald-50 border-emerald-100 text-emerald-800'} border rounded-3xl p-6 space-y-4 transition-all`}>
+              <div className="flex items-center gap-3">
+                <ShieldCheck className="text-emerald-500 shrink-0" size={24} />
+                <p className="text-xs font-bold leading-relaxed">
+                  To secure your event date and prevent bogus bookings, a deductible reservation fee of <span className="font-black underline">₱1,000</span> is required. This will be deducted from your total package price.
+                </p>
+              </div>
+              <div className={`p-4 rounded-2xl space-y-2 font-mono text-xs ${isDarkMode ? 'bg-black/40 border border-white/5' : 'bg-white border border-emerald-100/50 shadow-sm'}`}>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-slate-400">GCash Account:</span>
+                  <span className="font-extrabold text-sm text-indigo-400">0912 345 6789</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-slate-400">Maya Account:</span>
+                  <span className="font-extrabold text-sm text-indigo-400">0912 345 6789</span>
+                </div>
+                <div className="text-[10px] text-slate-400 text-right font-sans italic pt-1 border-t border-white/5">Account Name: Secret Corner Bar</div>
+              </div>
+              <div className="space-y-3 pt-2">
+                <label className={`text-[9px] font-black uppercase tracking-[0.2em] block ${isDarkMode ? 'text-emerald-400/80' : 'text-emerald-700'}`}>Select Payment Method</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button 
+                    type="button" 
+                    onClick={() => setFormData({...formData, paymentMethod: 'GCash'})} 
+                    className={`py-3 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border transition-all ${formData.paymentMethod === 'GCash' ? (isDarkMode ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20' : 'bg-blue-600 border-blue-600 text-white shadow-md') : (isDarkMode ? 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10' : 'bg-white border-gray-200 text-slate-600 hover:bg-gray-50')}`}
+                  >
+                    🔵 GCash
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => setFormData({...formData, paymentMethod: 'Maya'})} 
+                    className={`py-3 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border transition-all ${formData.paymentMethod === 'Maya' ? (isDarkMode ? 'bg-emerald-600 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-emerald-600 border-emerald-600 text-white shadow-md') : (isDarkMode ? 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10' : 'bg-white border-gray-200 text-slate-600 hover:bg-gray-50')}`}
+                  >
+                    🟢 Maya
+                  </button>
+                </div>
+              </div>
+              <div className="space-y-2 pt-2">
+                <label className={`text-[9px] font-black uppercase tracking-[0.2em] block ${isDarkMode ? 'text-emerald-400/80' : 'text-emerald-700'}`}>{formData.paymentMethod} Reference Number</label>
+                <input
+                  type="text"
+                  placeholder={`Enter 13-digit ${formData.paymentMethod} Ref No.`}
+                  required
+                  value={formData.referenceNumber}
+                  onChange={(e) => setFormData({...formData, referenceNumber: e.target.value})}
+                  className={`block w-full px-6 py-4 ${isDarkMode ? 'bg-black/40 border-white/10 text-white' : 'bg-white border-emerald-200 text-slate-900'} border rounded-2xl text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all font-mono`}
+                />
+                <p className="text-[10px] text-emerald-600/80 dark:text-emerald-400/60 italic font-medium leading-tight">⚠️ Your booking will only be approved after verifying this reference number.</p>
               </div>
             </div>
           </div>

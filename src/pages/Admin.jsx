@@ -21,7 +21,8 @@ import {
   ChevronRight,
   LayoutDashboard,
   HelpCircle,
-  Trash2
+  Trash2,
+  CreditCard
 } from 'lucide-react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -568,6 +569,13 @@ export default function Admin({ defaultTab = 'bookings' }) {
                                 🌐 {booking.socialLink.startsWith('http') ? 'Open FB/IG Link' : `Search FB: ${booking.socialLink}`}
                               </a>
                             ) : null}
+                            {booking.referenceNumber ? (
+                              <div className="mt-1">
+                                <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md border ${booking.paymentMethod === 'Maya' ? (isDarkMode ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-700') : (isDarkMode ? 'bg-blue-950/40 border-blue-800 text-blue-300' : 'bg-blue-50 border-blue-200 text-blue-700')}`}>
+                                  💳 {booking.paymentMethod || 'GCash'}: {booking.referenceNumber}
+                                </span>
+                              </div>
+                            ) : null}
                             <div className="mt-2"><p className={`text-[11px] font-black uppercase inline-block px-3 py-1 rounded-full border transition-all ${isDarkMode ? 'text-indigo-400 bg-indigo-900/30 border-indigo-800' : 'text-indigo-600 bg-indigo-50 border-indigo-100'}`}>{booking.packageName}</p></div>
                           </td>
                           <td className="py-6 px-4">
@@ -876,6 +884,23 @@ export default function Admin({ defaultTab = 'bookings' }) {
                       </a>
                     ) : (
                       <p className={`font-bold text-xs italic mt-1 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>No profile link provided (Legacy Booking)</p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <CreditCard size={20} className="text-slate-400 mt-1" />
+                  <div className="min-w-0 flex-1">
+                    <p className={`text-[11px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Reservation Fee Payment</p>
+                    {selectedBooking.referenceNumber ? (
+                      <div className={`mt-1.5 p-3.5 rounded-2xl border ${isDarkMode ? 'bg-emerald-950/20 border-emerald-500/20' : 'bg-emerald-50/50 border-emerald-100'} space-y-1`}>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${selectedBooking.paymentMethod === 'Maya' ? 'bg-emerald-500 text-white' : 'bg-blue-600 text-white'}`}>{selectedBooking.paymentMethod || 'GCash'}</span>
+                          <span className={`font-mono font-bold text-xs ${isDarkMode ? 'text-emerald-400' : 'text-emerald-700'}`}>Ref: {selectedBooking.referenceNumber}</span>
+                        </div>
+                        <p className={`text-[10px] italic ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>₱1,000 reservation fee paid. Deductible from package total.</p>
+                      </div>
+                    ) : (
+                      <p className={`font-bold text-xs italic mt-1 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>No payment reference provided (Legacy Booking)</p>
                     )}
                   </div>
                 </div>
