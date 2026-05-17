@@ -1,11 +1,9 @@
 import { Home, Calendar, ClipboardList, Info } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
-import { BookingContext } from '../context/BookingContext';
 import { ThemeContext } from '../context/ThemeContext';
 
 export default function Navbar() {
-  const { myBookings } = useContext(BookingContext);
   const { isDarkMode } = useContext(ThemeContext);
   const location = useLocation();
 

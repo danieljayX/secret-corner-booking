@@ -39,9 +39,7 @@ export default function PackageDetails() {
   const bg = isDarkMode ? 'bg-[#030014]' : 'bg-[#F5F3FF]';
   const textColor = isDarkMode ? 'text-white' : 'text-gray-900';
   const headerBg = isDarkMode ? 'bg-[#030014]/90' : 'bg-white/80';
-  const cardBg = isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100 shadow-sm';
   const sectionLabel = isDarkMode ? 'text-gray-600' : 'text-gray-400';
-  const featureItemBg = isDarkMode ? 'bg-white/5' : 'bg-gray-50';
 
   return (
     <div className={`min-h-screen ${bg} pb-24 font-['Inter'] transition-colors duration-300 ${textColor}`}>

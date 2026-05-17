@@ -25,7 +25,6 @@ export default function Login() {
   // Theme-aware styles
   const bg = isDarkMode ? 'bg-[#030014]' : 'bg-[#F8FAFC]';
   const textColor = isDarkMode ? 'text-white' : 'text-slate-900';
-  const cardBg = isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-100 shadow-2xl';
   const inputBg = isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200';
   const inputTextColor = isDarkMode ? 'text-white' : 'text-slate-900';
   const labelColor = isDarkMode ? 'text-slate-500' : 'text-slate-400';

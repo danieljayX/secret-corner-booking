@@ -4,7 +4,6 @@ import {
   LogOut, 
   Package, 
   Calendar as CalendarIcon, 
-  ShieldCheck,
   MessageSquare,
   BarChart2,
   Users,

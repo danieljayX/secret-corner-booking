@@ -55,10 +55,7 @@ export default function Home() {
 
   // Theme-aware class helpers
   const bg = isDarkMode ? 'bg-[#030014]' : 'bg-[#F5F3FF]';
-  const cardBg = isDarkMode ? 'bg-[#0a0a0f]' : 'bg-white';
-  const cardBorder = isDarkMode ? 'border-white/5' : 'border-gray-200';
   const headingColor = isDarkMode ? 'text-white' : 'text-gray-900';
-  const subTextColor = isDarkMode ? 'text-white/60' : 'text-gray-500';
   const sectionLabel = isDarkMode ? 'text-white' : 'text-gray-800';
   const backBtnBg = isDarkMode ? 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:text-white' : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-gray-900 shadow-sm';
 

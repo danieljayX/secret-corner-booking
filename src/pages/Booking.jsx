@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookingContext } from '../context/BookingContext';
 import { ThemeContext } from '../context/ThemeContext';
-import { ChevronLeft, Calendar as CalendarIcon, MapPin, User, Phone, MessageSquare, ShieldCheck, ArrowRight, Clock } from 'lucide-react';
+import { ChevronLeft, Calendar as CalendarIcon, MapPin, User, ShieldCheck, ArrowRight } from 'lucide-react';
 
 export default function Booking() {
   const navigate = useNavigate();

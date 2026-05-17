@@ -142,7 +142,7 @@ const initialPackages = [
 
 export function BookingProvider({ children }) {
   const [currentBooking, setCurrentBooking] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const loading = false;
 
   const [packages, setPackages] = useState(() => {
     const saved = localStorage.getItem('packages');

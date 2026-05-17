@@ -49,7 +49,7 @@ export default function OrderTracking() {
         <div className="relative pl-4 space-y-8">
           <div className="absolute top-2 bottom-2 left-[23px] w-0.5 bg-gray-200"></div>
           
-          {steps.map((step, index) => (
+          {steps.map((step) => (
             <div key={step.id} className="flex gap-4 relative z-10">
               <div className={`w-4 h-4 rounded-full mt-1 ${
                 step.status === 'completed' ? 'bg-green-500' :

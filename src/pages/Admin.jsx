@@ -1,13 +1,11 @@
-import { useState, useContext, useMemo, useEffect } from 'react';
+import { useState, useContext, useMemo } from 'react';
 import { BookingContext } from '../context/BookingContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { 
   Search, 
-  ChevronDown,
   Edit3,
   Calendar as CalendarIcon,
   X,
-  Phone,
   MapPin,
   Clock,
   MessageSquare,
@@ -22,8 +20,8 @@ import {
   Settings,
   ChevronRight,
   LayoutDashboard,
-  Bell,
-  HelpCircle
+  HelpCircle,
+  Trash2
 } from 'lucide-react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -81,8 +79,8 @@ const MobileStatCard = ({ title, value, icon: Icon, color, trend, bg, isDarkMode
   </div>
 );
 
-const MobileBookingItem = ({ booking, onClick, isDarkMode }) => (
-  <div onClick={onClick} className={`flex items-center gap-4 py-4 border-b last:border-0 transition-colors ${isDarkMode ? 'border-slate-800 active:bg-slate-800' : 'border-slate-50 active:bg-slate-50'}`}>
+const MobileBookingItem = ({ booking, onClick, onDelete, isDarkMode }) => (
+  <div onClick={onClick} className={`flex items-center gap-4 py-4 border-b last:border-0 transition-colors cursor-pointer ${isDarkMode ? 'border-slate-800 active:bg-slate-800' : 'border-slate-50 active:bg-slate-50'}`}>
     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center overflow-hidden shrink-0 shadow-sm ${isDarkMode ? 'bg-slate-800' : 'bg-slate-100'}`}>
       {booking.packageName?.includes('Bar') ? (
         <div className={`w-full h-full flex items-center justify-center ${isDarkMode ? 'bg-indigo-900/30 text-indigo-400' : 'bg-indigo-50 text-indigo-500'}`}>
@@ -106,20 +104,31 @@ const MobileBookingItem = ({ booking, onClick, isDarkMode }) => (
        }`}>
          {booking.status === 'Confirmed' ? 'Confirmed' : booking.status === 'Declined' ? 'Cancelled' : 'Pending'}
        </span>
-       <ChevronRight size={18} className="text-slate-300" />
+       <div className="flex items-center gap-1 mt-0.5">
+         <button 
+           onClick={(e) => { e.stopPropagation(); onDelete(booking.id); }}
+           className={`p-1.5 rounded-lg hover:bg-rose-500/10 hover:text-rose-500 transition-all ${isDarkMode ? 'text-slate-600' : 'text-slate-300'}`}
+           title="Delete Booking"
+         >
+           <Trash2 size={15} />
+         </button>
+         <ChevronRight size={18} className="text-slate-300" />
+       </div>
     </div>
   </div>
 );
 
 export default function Admin({ defaultTab = 'bookings' }) {
-  const { myBookings, updateBookingStatus, bookedDates, packages, updatePackage } = useContext(BookingContext);
+  const { myBookings, updateBookingStatus, deleteBooking, bookedDates, packages, updatePackage } = useContext(BookingContext);
   const { isDarkMode } = useContext(ThemeContext);
   const [activeTab, setActiveTab] = useState(defaultTab);
+  const [prevDefaultTab, setPrevDefaultTab] = useState(defaultTab);
 
-  // Sync activeTab with defaultTab prop when route changes
-  useEffect(() => {
+  if (defaultTab !== prevDefaultTab) {
     setActiveTab(defaultTab);
-  }, [defaultTab]);
+    setPrevDefaultTab(defaultTab);
+  }
+
   const [filterStatus, setFilterStatus] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -178,6 +187,8 @@ export default function Admin({ defaultTab = 'bookings' }) {
     return matchesStatus && (name.includes(query) || pkg.includes(query));
   });
 
+  const pendingBookings = myBookings.filter(b => b.status === 'Pending');
+
   const getStatusStyle = (status) => {
     if (status === 'Confirmed') return isDarkMode ? 'text-emerald-400 bg-emerald-950/30 border border-emerald-900/50' : 'text-emerald-600 bg-emerald-50 border border-emerald-100';
     if (status === 'Declined') return isDarkMode ? 'text-red-400 bg-red-950/30 border border-red-900/50' : 'text-red-600 bg-red-50 border border-red-100';
@@ -226,6 +237,77 @@ export default function Admin({ defaultTab = 'bookings' }) {
                 </div>
              </div>
           </div>
+          
+          {/* URGENT APPROVALS BANNER (MOBILE) */}
+          {pendingBookings.length > 0 && (
+            <div className={`rounded-[24px] p-4 border shadow-sm transition-all ${
+              isDarkMode 
+                ? 'bg-amber-950/20 border-amber-500/30' 
+                : 'bg-amber-50/50 border-amber-200'
+            }`}>
+              <div className="flex items-center gap-3 mb-3">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${isDarkMode ? 'bg-amber-500/20 border border-amber-500/30 text-amber-400' : 'bg-amber-500 text-white shadow-sm'}`}>
+                  <Clock size={16} />
+                </div>
+                <div>
+                  <h3 className={`text-sm font-black uppercase italic tracking-wider ${isDarkMode ? 'text-amber-400' : 'text-amber-700'}`}>
+                    Urgent Approvals
+                  </h3>
+                  <p className={`text-[10px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                    {pendingBookings.length} {pendingBookings.length === 1 ? 'request needs' : 'requests need'} review
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-3 overflow-x-auto pb-2 pt-1 scrollbar-none snap-x">
+                {pendingBookings.map(booking => (
+                  <div key={booking.id} className={`w-[280px] shrink-0 snap-center rounded-xl p-3.5 border flex flex-col justify-between gap-3 transition-all ${
+                    isDarkMode ? 'bg-slate-900/90 border-amber-500/20 shadow-sm' : 'bg-white border-amber-100 shadow-sm'
+                  }`}>
+                    <div>
+                      <div className="flex justify-between items-center mb-1.5">
+                        <span className="text-[9px] font-black px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-500 border border-amber-500/20 uppercase tracking-widest">
+                          #{String(booking.id).slice(-4)}
+                        </span>
+                        <span className={`text-[9px] font-bold ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                          {booking.date}
+                        </span>
+                      </div>
+                      <h4 className={`text-sm font-black truncate ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                        {booking.eventName || 'Unnamed Event'}
+                      </h4>
+                      <p className={`text-[11px] font-bold mt-1 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        👤 {booking.customerName}
+                      </p>
+                      <p className={`text-[11px] font-bold mt-0.5 truncate ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                        📍 {booking.location}
+                      </p>
+                      <p className={`text-[11px] font-black mt-1.5 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`}>
+                        📦 {booking.packageName} (₱{booking.packagePrice?.toLocaleString()})
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-2 border-t border-dashed border-slate-200 dark:border-slate-800">
+                      <button 
+                        onClick={() => updateBookingStatus(booking.id, 'Confirmed')}
+                        className="flex-1 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-[10px] uppercase tracking-wider rounded-lg shadow-sm active:scale-95 transition-all flex items-center justify-center gap-1"
+                      >
+                        <CheckCircle size={12} /> Approve
+                      </button>
+                      <button 
+                        onClick={() => updateBookingStatus(booking.id, 'Declined')}
+                        className={`flex-1 py-2 border font-black text-[10px] uppercase tracking-wider rounded-lg active:scale-95 transition-all flex items-center justify-center gap-1 ${
+                          isDarkMode ? 'bg-slate-800 border-rose-900 text-rose-400 hover:bg-rose-950' : 'bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100'
+                        }`}
+                      >
+                        <XCircle size={12} /> Decline
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Overview Section */}
           <div className="space-y-4">
@@ -291,7 +373,7 @@ export default function Admin({ defaultTab = 'bookings' }) {
                   <p className={`text-center py-6 text-sm font-medium ${isDarkMode ? 'text-slate-600' : 'text-slate-400'}`}>No bookings found</p>
                 ) : (
                   filteredBookings.map((booking) => (
-                    <MobileBookingItem key={booking.id} booking={booking} onClick={() => setSelectedBooking(booking)} isDarkMode={isDarkMode} />
+                    <MobileBookingItem key={booking.id} booking={booking} onClick={() => setSelectedBooking(booking)} onDelete={deleteBooking} isDarkMode={isDarkMode} />
                   ))
                 )}
              </div>
@@ -306,14 +388,17 @@ export default function Admin({ defaultTab = 'bookings' }) {
                   { icon: LayoutDashboard, label: 'All Bookings', bg: isDarkMode ? 'bg-emerald-900/30' : 'bg-emerald-50', color: isDarkMode ? 'text-emerald-400' : 'text-emerald-600', action: () => setActiveTab('bookings') },
                   { icon: BarChart3, label: 'Reports', bg: isDarkMode ? 'bg-violet-900/30' : 'bg-violet-50', color: isDarkMode ? 'text-violet-400' : 'text-violet-600', action: () => {} },
                   { icon: Settings, label: 'Settings', bg: isDarkMode ? 'bg-slate-800' : 'bg-slate-100', color: isDarkMode ? 'text-slate-400' : 'text-slate-600', action: () => {} },
-                ].map((action, i) => (
-                  <div key={i} className="flex flex-col items-center gap-2.5">
-                     <button onClick={action.action} className={`w-15 h-15 rounded-[22px] flex items-center justify-center ${action.bg} ${action.color} active:scale-90 transition-all shadow-sm border ${isDarkMode ? 'border-slate-700' : 'border-white'}`}>
-                        <action.icon size={26} strokeWidth={2.5} />
-                     </button>
-                     <span className={`text-[11px] font-bold text-center leading-tight ${isDarkMode ? 'text-slate-500' : 'text-slate-500'}`}>{action.label}</span>
-                  </div>
-                ))}
+                ].map((action, i) => {
+                  const ActionIcon = action.icon;
+                  return (
+                    <div key={i} className="flex flex-col items-center gap-2.5">
+                       <button onClick={action.action} className={`w-15 h-15 rounded-[22px] flex items-center justify-center ${action.bg} ${action.color} active:scale-90 transition-all shadow-sm border ${isDarkMode ? 'border-slate-700' : 'border-white'}`}>
+                          <ActionIcon size={26} strokeWidth={2.5} />
+                       </button>
+                       <span className={`text-[11px] font-bold text-center leading-tight ${isDarkMode ? 'text-slate-500' : 'text-slate-500'}`}>{action.label}</span>
+                    </div>
+                  );
+                })}
              </div>
           </div>
         </div>
@@ -345,6 +430,77 @@ export default function Admin({ defaultTab = 'bookings' }) {
         {/* BOOKINGS TABLE */}
         {activeTab === 'bookings' && (
           <div className="space-y-8">
+            {/* URGENT APPROVALS BANNER (DESKTOP) */}
+            {pendingBookings.length > 0 && (
+              <div className={`hidden lg:block rounded-[24px] p-6 border shadow-sm transition-all ${
+                isDarkMode 
+                  ? 'bg-amber-950/20 border-amber-500/30' 
+                  : 'bg-amber-50/50 border-amber-200'
+              }`}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isDarkMode ? 'bg-amber-500/20 border border-amber-500/30 text-amber-400' : 'bg-amber-500 text-white shadow-sm'}`}>
+                    <Clock size={18} />
+                  </div>
+                  <div>
+                    <h3 className={`text-base font-black uppercase italic tracking-wider ${isDarkMode ? 'text-amber-400' : 'text-amber-700'}`}>
+                      Urgent Approvals Needed
+                    </h3>
+                    <p className={`text-[11px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                      {pendingBookings.length} {pendingBookings.length === 1 ? 'reservation requires' : 'reservations require'} immediate review
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4 overflow-x-auto pb-4 pt-1 scrollbar-none">
+                  {pendingBookings.map(booking => (
+                    <div key={booking.id} className={`w-[320px] shrink-0 rounded-xl p-4 border flex flex-col justify-between gap-4 transition-all ${
+                      isDarkMode ? 'bg-slate-900/90 border-amber-500/20 shadow-sm' : 'bg-white border-amber-100 shadow-sm'
+                    }`}>
+                      <div>
+                        <div className="flex justify-between items-center mb-1.5">
+                          <span className="text-[9px] font-black px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-500 border border-amber-500/20 uppercase tracking-widest">
+                            #{String(booking.id).slice(-4)}
+                          </span>
+                          <span className={`text-[9px] font-bold ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                            {booking.date}
+                          </span>
+                        </div>
+                        <h4 className={`text-sm font-black truncate ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                          {booking.eventName || 'Unnamed Event'}
+                        </h4>
+                        <p className={`text-[11px] font-bold mt-1 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                          👤 {booking.customerName}
+                        </p>
+                        <p className={`text-[11px] font-bold mt-0.5 truncate ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                          📍 {booking.location}
+                        </p>
+                        <p className={`text-[11px] font-black mt-1.5 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`}>
+                          📦 {booking.packageName} (₱{booking.packagePrice?.toLocaleString()})
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-2 border-t border-dashed border-slate-200 dark:border-slate-800">
+                        <button 
+                          onClick={() => updateBookingStatus(booking.id, 'Confirmed')}
+                          className="flex-1 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-[10px] uppercase tracking-wider rounded-lg shadow-sm active:scale-95 transition-all flex items-center justify-center gap-1"
+                        >
+                          <CheckCircle size={12} /> Approve
+                        </button>
+                        <button 
+                          onClick={() => updateBookingStatus(booking.id, 'Declined')}
+                          className={`flex-1 py-2 border font-black text-[10px] uppercase tracking-wider rounded-lg active:scale-95 transition-all flex items-center justify-center gap-1 ${
+                            isDarkMode ? 'bg-slate-800 border-rose-900 text-rose-400 hover:bg-rose-950' : 'bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100'
+                          }`}
+                        >
+                          <XCircle size={12} /> Decline
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="hidden lg:grid grid-cols-4 gap-6">
               {statsData.map((stat, i) => <StatCard key={i} {...stat} isDarkMode={isDarkMode} />)}
             </div>
@@ -382,11 +538,19 @@ export default function Admin({ defaultTab = 'bookings' }) {
                           <td className={`py-6 px-4 text-[14px] font-bold hidden md:table-cell truncate max-w-[200px] ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>{booking.location}</td>
                           <td className={`py-6 px-4 text-[14px] font-bold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>{booking.date}</td>
                           <td className="py-6 px-8 text-right">
-                            {booking.status === 'Pending' ? (
-                              <button onClick={(e) => { e.stopPropagation(); updateBookingStatus(booking.id, 'Confirmed'); }} className="px-4 py-2 bg-emerald-500 text-white font-bold text-[11px] rounded-xl shadow-lg shadow-emerald-500/20 active:scale-95 transition-all">Approve</button>
-                            ) : (
+                            <div className="flex items-center justify-end gap-2">
+                              {booking.status === 'Pending' ? (
+                                <button onClick={(e) => { e.stopPropagation(); updateBookingStatus(booking.id, 'Confirmed'); }} className="px-4 py-2 bg-emerald-500 text-white font-bold text-[11px] rounded-xl shadow-lg shadow-emerald-500/20 active:scale-95 transition-all">Approve</button>
+                              ) : null}
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); deleteBooking(booking.id); }}
+                                className={`p-2 rounded-xl hover:bg-rose-500/10 hover:text-rose-500 transition-all ${isDarkMode ? 'text-slate-600' : 'text-slate-300'}`}
+                                title="Delete Booking"
+                              >
+                                <Trash2 size={16} />
+                              </button>
                               <ChevronRight className="inline-block text-slate-300" size={20} />
-                            )}
+                            </div>
                           </td>
                         </tr>
                       ))
@@ -649,13 +813,19 @@ export default function Admin({ defaultTab = 'bookings' }) {
                 </div>
               </div>
             </div>
-            {selectedBooking.status === 'Pending' && (
+            {selectedBooking.status === 'Pending' ? (
               <div className={`p-6 lg:p-8 border-t flex gap-4 ${isDarkMode ? 'bg-slate-800/50 border-slate-800' : 'bg-slate-50/50 border-slate-50'}`}>
                 <button onClick={() => { updateBookingStatus(selectedBooking.id, 'Confirmed'); setSelectedBooking(null); }} className="flex-1 py-4 bg-emerald-500 text-white font-black rounded-2xl shadow-xl shadow-emerald-500/20 active:scale-95 transition-all">
                   Approve
                 </button>
                 <button onClick={() => { updateBookingStatus(selectedBooking.id, 'Declined'); setSelectedBooking(null); }} className={`px-6 py-4 border font-black rounded-2xl active:scale-95 transition-all ${isDarkMode ? 'bg-slate-800 border-rose-900 text-rose-400 hover:bg-rose-950' : 'bg-white border-rose-200 text-rose-500 hover:bg-rose-50'}`}>
                   Decline
+                </button>
+              </div>
+            ) : (
+              <div className={`p-6 lg:p-8 border-t flex justify-end ${isDarkMode ? 'bg-slate-800/50 border-slate-800' : 'bg-slate-50/50 border-slate-50'}`}>
+                <button onClick={() => { deleteBooking(selectedBooking.id); setSelectedBooking(null); }} className={`px-6 py-3 border font-black rounded-2xl active:scale-95 transition-all flex items-center gap-2 ${isDarkMode ? 'bg-slate-800 border-rose-900 text-rose-400 hover:bg-rose-950' : 'bg-white border-rose-200 text-rose-500 hover:bg-rose-50'}`}>
+                  <Trash2 size={18} /> Delete Booking
                 </button>
               </div>
             )}
