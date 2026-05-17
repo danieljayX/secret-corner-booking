@@ -106,7 +106,7 @@ const MobileBookingItem = ({ booking, onClick, onDelete, isDarkMode }) => (
        </span>
        <div className="flex items-center gap-1 mt-0.5">
          <button 
-           onClick={(e) => { e.stopPropagation(); onDelete(booking.id); }}
+           onClick={(e) => { e.stopPropagation(); onDelete(booking); }}
            className={`p-1.5 rounded-lg hover:bg-rose-500/10 hover:text-rose-500 transition-all ${isDarkMode ? 'text-slate-600' : 'text-slate-300'}`}
            title="Delete Booking"
          >
@@ -136,6 +136,7 @@ export default function Admin({ defaultTab = 'bookings' }) {
   const [editingPackage, setEditingPackage] = useState(null);
   const [editFormData, setEditFormData] = useState({ name: '', price: '', features: [] });
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [bookingToDelete, setBookingToDelete] = useState(null);
 
   const statsData = useMemo(() => {
     const total = myBookings.length;
@@ -373,7 +374,7 @@ export default function Admin({ defaultTab = 'bookings' }) {
                   <p className={`text-center py-6 text-sm font-medium ${isDarkMode ? 'text-slate-600' : 'text-slate-400'}`}>No bookings found</p>
                 ) : (
                   filteredBookings.map((booking) => (
-                    <MobileBookingItem key={booking.id} booking={booking} onClick={() => setSelectedBooking(booking)} onDelete={deleteBooking} isDarkMode={isDarkMode} />
+                    <MobileBookingItem key={booking.id} booking={booking} onClick={() => setSelectedBooking(booking)} onDelete={setBookingToDelete} isDarkMode={isDarkMode} />
                   ))
                 )}
              </div>
@@ -543,7 +544,7 @@ export default function Admin({ defaultTab = 'bookings' }) {
                                 <button onClick={(e) => { e.stopPropagation(); updateBookingStatus(booking.id, 'Confirmed'); }} className="px-4 py-2 bg-emerald-500 text-white font-bold text-[11px] rounded-xl shadow-lg shadow-emerald-500/20 active:scale-95 transition-all">Approve</button>
                               ) : null}
                               <button 
-                                onClick={(e) => { e.stopPropagation(); deleteBooking(booking.id); }}
+                                onClick={(e) => { e.stopPropagation(); setBookingToDelete(booking); }}
                                 className={`p-2 rounded-xl hover:bg-rose-500/10 hover:text-rose-500 transition-all ${isDarkMode ? 'text-slate-600' : 'text-slate-300'}`}
                                 title="Delete Booking"
                               >
@@ -824,7 +825,7 @@ export default function Admin({ defaultTab = 'bookings' }) {
               </div>
             ) : (
               <div className={`p-6 lg:p-8 border-t flex justify-end ${isDarkMode ? 'bg-slate-800/50 border-slate-800' : 'bg-slate-50/50 border-slate-50'}`}>
-                <button onClick={() => { deleteBooking(selectedBooking.id); setSelectedBooking(null); }} className={`px-6 py-3 border font-black rounded-2xl active:scale-95 transition-all flex items-center gap-2 ${isDarkMode ? 'bg-slate-800 border-rose-900 text-rose-400 hover:bg-rose-950' : 'bg-white border-rose-200 text-rose-500 hover:bg-rose-50'}`}>
+                <button onClick={() => { setBookingToDelete(selectedBooking); }} className={`px-6 py-3 border font-black rounded-2xl active:scale-95 transition-all flex items-center gap-2 ${isDarkMode ? 'bg-slate-800 border-rose-900 text-rose-400 hover:bg-rose-950' : 'bg-white border-rose-200 text-rose-500 hover:bg-rose-50'}`}>
                   <Trash2 size={18} /> Delete Booking
                 </button>
               </div>
@@ -853,6 +854,46 @@ export default function Admin({ defaultTab = 'bookings' }) {
                 </div>
               </form>
            </div>
+        </div>
+      )}
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {bookingToDelete && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md" onClick={() => setBookingToDelete(null)}>
+          <div className={`rounded-[32px] shadow-2xl w-full max-w-md overflow-hidden flex flex-col border transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800 shadow-rose-950/20' : 'bg-white border-slate-100 shadow-rose-500/10'}`} onClick={e => e.stopPropagation()}>
+            <div className={`p-8 border-b flex items-center gap-4 ${isDarkMode ? 'bg-rose-950/30 border-slate-800 text-rose-400' : 'bg-rose-50 border-rose-100 text-rose-600'}`}>
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/20 flex items-center justify-center shrink-0">
+                <Trash2 size={24} />
+              </div>
+              <div>
+                <h3 className="text-xl font-black tracking-tight italic uppercase">Confirm Deletion</h3>
+                <p className="text-[11px] font-bold uppercase tracking-widest opacity-80">This action cannot be undone</p>
+              </div>
+            </div>
+            <div className="p-8 space-y-6">
+              <p className={`text-sm font-bold leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                Are you sure you want to permanently delete the reservation for <span className={`font-black ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{bookingToDelete.customerName}</span> ({bookingToDelete.eventName || 'Unnamed Event'})?
+              </p>
+              <div className="flex gap-4 pt-2">
+                <button 
+                  onClick={() => { 
+                    deleteBooking(bookingToDelete.id); 
+                    setBookingToDelete(null); 
+                    if (selectedBooking?.id === bookingToDelete.id) setSelectedBooking(null);
+                  }} 
+                  className="flex-1 py-4 bg-rose-500 hover:bg-rose-600 text-white font-black uppercase tracking-wider text-xs rounded-2xl shadow-xl shadow-rose-500/20 active:scale-95 transition-all"
+                >
+                  Yes, Delete
+                </button>
+                <button 
+                  onClick={() => setBookingToDelete(null)} 
+                  className={`flex-1 py-4 border font-black uppercase tracking-wider text-xs rounded-2xl active:scale-95 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
