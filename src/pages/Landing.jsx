@@ -1,38 +1,11 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
-import { Martini, ChevronRight, Sun, Moon, Layers, Volume2 } from 'lucide-react';
+import { Martini, ChevronRight, Sun, Moon, Layers } from 'lucide-react';
 
 export default function Landing() {
   const navigate = useNavigate();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
-
-  const playGreeting = () => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel(); // Cancel any ongoing speech
-      const hour = new Date().getHours();
-      let greetingText = "Good morning, Ma'am and Sir! Welcome to Secret Corner.";
-      if (hour >= 12 && hour < 18) {
-        greetingText = "Good afternoon, Ma'am and Sir! Welcome to Secret Corner.";
-      } else if (hour >= 18) {
-        greetingText = "Good evening, Ma'am and Sir! Welcome to Secret Corner.";
-      }
-
-      const utterance = new SpeechSynthesisUtterance(greetingText);
-      utterance.rate = 1.0;
-      utterance.pitch = 1.0;
-      utterance.lang = 'en-US';
-      window.speechSynthesis.speak(utterance);
-    }
-  };
-
-  useEffect(() => {
-    // Attempt to play greeting on mount (may be blocked by browser autoplay policy until user interaction)
-    const timer = setTimeout(() => {
-      playGreeting();
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
 
   const bg = isDarkMode ? 'bg-[#030014]' : 'bg-[#F5F3FF]';
   const headingColor = isDarkMode ? 'text-white' : 'text-gray-900';
@@ -50,25 +23,10 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* Top Right Controls: Greeting Toggle & Theme Toggle */}
-      <div className="absolute top-12 right-8 flex items-center gap-3 z-50">
-        <button 
-          onClick={playGreeting} 
-          className={`h-10 px-4 rounded-full flex items-center gap-2 transition-all shadow-lg ${isDarkMode ? 'bg-[#1a1a24] border border-white/5 text-pink-400 hover:text-pink-300' : 'bg-white border border-pink-100 text-pink-500 hover:text-pink-600'}`}
-          title="Play Voice Greeting"
-        >
-          <Volume2 size={18} className="animate-pulse" />
-          <span className="text-xs font-bold uppercase tracking-wider">Play Greeting</span>
-        </button>
-
-        <button 
-          onClick={toggleTheme} 
-          className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-lg ${isDarkMode ? 'bg-[#1a1a24] border border-white/5 text-white/60 hover:text-white' : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-900'}`}
-          title="Toggle Theme"
-        >
-          {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
-      </div>
+      {/* Theme Toggle at top right */}
+      <button onClick={toggleTheme} className={`absolute top-12 right-8 w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-lg z-50 ${isDarkMode ? 'bg-[#1a1a24] border border-white/5 text-white/60 hover:text-white' : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-900'}`}>
+        {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+      </button>
 
       {/* Main Hero Content */}
       <div className="flex-1 flex flex-col justify-center pb-20">
