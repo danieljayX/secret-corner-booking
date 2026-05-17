@@ -102,6 +102,14 @@ const formatDateTime = (isoStr, fallbackDate) => {
   }
 };
 
+const getSocialHref = (link) => {
+  if (!link) return '#';
+  if (link.startsWith('http://') || link.startsWith('https://')) {
+    return link;
+  }
+  return `https://www.facebook.com/search/top?q=${encodeURIComponent(link)}`;
+};
+
 const MobileBookingItem = ({ booking, onClick, onDelete, isDarkMode }) => (
   <div onClick={onClick} className={`flex items-center gap-4 py-4 border-b last:border-0 transition-colors cursor-pointer ${isDarkMode ? 'border-slate-800 active:bg-slate-800' : 'border-slate-50 active:bg-slate-50'}`}>
     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center overflow-hidden shrink-0 shadow-sm ${isDarkMode ? 'bg-slate-800' : 'bg-slate-100'}`}>
@@ -556,8 +564,8 @@ export default function Admin({ defaultTab = 'bookings' }) {
                             <p className={`font-bold text-[15px] ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{booking.eventName || 'Unnamed Event'}</p>
                             <p className={`text-[12px] font-bold mt-1 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>👤 {booking.customerName}</p>
                             {booking.socialLink ? (
-                              <a href={booking.socialLink} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className={`inline-flex items-center gap-1 text-[10px] font-bold mt-1 px-2.5 py-0.5 rounded-md border ${isDarkMode ? 'bg-indigo-950/40 border-indigo-800 text-indigo-300 hover:underline' : 'bg-indigo-50 border-indigo-200 text-indigo-600 hover:underline'}`}>
-                                🌐 Verify FB/IG
+                              <a href={getSocialHref(booking.socialLink)} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className={`inline-flex items-center gap-1 text-[10px] font-bold mt-1 px-2.5 py-0.5 rounded-md border ${isDarkMode ? 'bg-indigo-950/40 border-indigo-800 text-indigo-300 hover:underline' : 'bg-indigo-50 border-indigo-200 text-indigo-600 hover:underline'}`}>
+                                🌐 {booking.socialLink.startsWith('http') ? 'Open FB/IG Link' : `Search FB: ${booking.socialLink}`}
                               </a>
                             ) : null}
                             <div className="mt-2"><p className={`text-[11px] font-black uppercase inline-block px-3 py-1 rounded-full border transition-all ${isDarkMode ? 'text-indigo-400 bg-indigo-900/30 border-indigo-800' : 'text-indigo-600 bg-indigo-50 border-indigo-100'}`}>{booking.packageName}</p></div>
@@ -859,12 +867,12 @@ export default function Admin({ defaultTab = 'bookings' }) {
                     <p className={`text-[11px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Social Media Profile (Verification)</p>
                     {selectedBooking.socialLink ? (
                       <a 
-                        href={selectedBooking.socialLink} 
+                        href={getSocialHref(selectedBooking.socialLink)} 
                         target="_blank" 
                         rel="noopener noreferrer" 
                         className={`inline-flex items-center gap-1.5 font-bold text-xs mt-1.5 px-4 py-2 rounded-xl border transition-all truncate max-w-full ${isDarkMode ? 'bg-indigo-950/40 border-indigo-800 text-indigo-300 hover:bg-indigo-900/50' : 'bg-indigo-50 border-indigo-200 text-indigo-600 hover:bg-indigo-100'}`}
                       >
-                        🌐 View Profile Link
+                        🌐 {selectedBooking.socialLink.startsWith('http') ? 'Open Profile Link' : `Search FB: ${selectedBooking.socialLink}`}
                       </a>
                     ) : (
                       <p className={`font-bold text-xs italic mt-1 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>No profile link provided (Legacy Booking)</p>

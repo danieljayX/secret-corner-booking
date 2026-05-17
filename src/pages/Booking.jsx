@@ -172,17 +172,17 @@ export default function Booking() {
               <div className="space-y-2 pt-2 border-t border-gray-100/10">
                 <div className="flex items-center gap-2 px-2">
                   <Globe size={14} className={isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} />
-                  <label className={`text-[9px] font-black uppercase tracking-[0.2em] ${labelColor}`}>Facebook / Instagram Profile Link</label>
+                  <label className={`text-[9px] font-black uppercase tracking-[0.2em] ${labelColor}`}>Facebook Profile Name or Link</label>
                 </div>
                 <input
-                  type="url"
-                  placeholder="https://facebook.com/yourprofile"
+                  type="text"
+                  placeholder="e.g. Juan Dela Cruz or https://facebook.com/juan"
                   required
                   value={formData.socialLink}
                   onChange={(e) => setFormData({...formData, socialLink: e.target.value})}
                   className={`block w-full px-6 py-5 ${inputBg} rounded-[1.5rem] text-sm ${inputTextColor} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all`}
                 />
-                <p className="text-[10px] text-gray-400 px-2 italic font-medium leading-tight">⚠️ Required for identity verification to prevent bogus bookings.</p>
+                <p className="text-[10px] text-gray-400 px-2 italic font-medium leading-tight">🔒 We only check your public profile to confirm you are a real person. We will NEVER ask for your password.</p>
               </div>
             </div>
           </div>
