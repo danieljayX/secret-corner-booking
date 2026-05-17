@@ -79,6 +79,29 @@ const MobileStatCard = ({ title, value, icon: Icon, color, trend, bg, isDarkMode
   </div>
 );
 
+const formatTime = (timeStr) => {
+  if (!timeStr) return 'N/A';
+  const [hours, minutes] = timeStr.split(':');
+  const h = parseInt(hours, 10);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const formattedH = h % 12 || 12;
+  return `${formattedH}:${minutes || '00'} ${ampm}`;
+};
+
+const formatDateTime = (isoStr, fallbackDate) => {
+  if (!isoStr) {
+    if (fallbackDate) return `${fallbackDate} (Legacy)`;
+    return 'N/A';
+  }
+  try {
+    const d = new Date(isoStr);
+    if (isNaN(d.getTime())) return isoStr;
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+  } catch {
+    return isoStr;
+  }
+};
+
 const MobileBookingItem = ({ booking, onClick, onDelete, isDarkMode }) => (
   <div onClick={onClick} className={`flex items-center gap-4 py-4 border-b last:border-0 transition-colors cursor-pointer ${isDarkMode ? 'border-slate-800 active:bg-slate-800' : 'border-slate-50 active:bg-slate-50'}`}>
     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center overflow-hidden shrink-0 shadow-sm ${isDarkMode ? 'bg-slate-800' : 'bg-slate-100'}`}>
@@ -95,7 +118,10 @@ const MobileBookingItem = ({ booking, onClick, onDelete, isDarkMode }) => (
     <div className="flex-1 min-w-0">
       <h4 className={`text-[14px] font-black tracking-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{booking.customerName}</h4>
       <p className={`text-[11px] font-bold truncate mt-1 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{booking.location}</p>
-      <p className={`text-[10px] font-black uppercase tracking-wider mt-1.5 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`}>{booking.date}</p>
+      <div className="mt-1.5 space-y-0.5">
+        <p className={`text-[10px] font-black uppercase tracking-wider ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`}>📅 {booking.date} {booking.time ? `at ${formatTime(booking.time)}` : ''}</p>
+        <p className={`text-[9px] font-bold ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>🕒 Booked: {formatDateTime(booking.created_at, booking.date)}</p>
+      </div>
     </div>
     <div className="flex flex-col items-end gap-2 shrink-0">
        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
@@ -537,7 +563,10 @@ export default function Admin({ defaultTab = 'bookings' }) {
                             </span>
                           </td>
                           <td className={`py-6 px-4 text-[14px] font-bold hidden md:table-cell truncate max-w-[200px] ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>{booking.location}</td>
-                          <td className={`py-6 px-4 text-[14px] font-bold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>{booking.date}</td>
+                          <td className={`py-6 px-4 text-[14px] font-bold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                            <div>📅 {booking.date} {booking.time ? `at ${formatTime(booking.time)}` : ''}</div>
+                            <div className={`text-[11px] font-medium mt-1 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>🕒 Booked: {formatDateTime(booking.created_at, booking.date)}</div>
+                          </td>
                           <td className="py-6 px-8 text-right">
                             <div className="flex items-center justify-end gap-2">
                               {booking.status === 'Pending' ? (
@@ -801,8 +830,15 @@ export default function Admin({ defaultTab = 'bookings' }) {
                 <div className="flex items-start gap-4">
                   <CalendarIcon size={20} className="text-slate-400 mt-1" />
                   <div>
-                    <p className={`text-[11px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Schedule</p>
-                    <p className={`font-bold ${textColor}`}>{selectedBooking.date} at {selectedBooking.time}</p>
+                    <p className={`text-[11px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Event Schedule</p>
+                    <p className={`font-bold ${textColor}`}>{selectedBooking.date} {selectedBooking.time ? `at ${formatTime(selectedBooking.time)}` : ''}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <Clock size={20} className="text-slate-400 mt-1" />
+                  <div>
+                    <p className={`text-[11px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Date & Time Booked</p>
+                    <p className={`font-bold ${textColor}`}>{formatDateTime(selectedBooking.created_at, selectedBooking.date)}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
