@@ -178,7 +178,8 @@ export function BookingProvider({ children }) {
         date: '2024-05-20',
         time: '14:00',
         status: 'Confirmed',
-        customerPhone: '09123456789'
+        customerPhone: '09123456789',
+        socialLink: 'https://facebook.com/juandelacruz'
       },
       {
         id: 2,
@@ -190,7 +191,8 @@ export function BookingProvider({ children }) {
         date: '2024-05-21',
         time: '15:00',
         status: 'Pending',
-        customerPhone: '09223334444'
+        customerPhone: '09223334444',
+        socialLink: 'https://instagram.com/mariasantos'
       },
       {
         id: 3,
@@ -202,7 +204,8 @@ export function BookingProvider({ children }) {
         date: '2024-05-18',
         time: '11:00',
         status: 'Declined',
-        customerPhone: '09445556666'
+        customerPhone: '09445556666',
+        socialLink: 'https://facebook.com/robertgarcia'
       }
     ];
   });

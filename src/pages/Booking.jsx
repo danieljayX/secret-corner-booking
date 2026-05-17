@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookingContext } from '../context/BookingContext';
 import { ThemeContext } from '../context/ThemeContext';
-import { ChevronLeft, Calendar as CalendarIcon, MapPin, User, ShieldCheck, ArrowRight } from 'lucide-react';
+import { ChevronLeft, Calendar as CalendarIcon, MapPin, User, ShieldCheck, ArrowRight, Globe } from 'lucide-react';
 
 export default function Booking() {
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ export default function Booking() {
     eventName: '',
     customerName: '',
     customerPhone: '',
+    socialLink: '',
     specialRequests: ''
   });
 
@@ -168,6 +169,21 @@ export default function Booking() {
                 onChange={(e) => setFormData({...formData, customerPhone: e.target.value})}
                 className={`block w-full px-6 py-5 ${inputBg} rounded-[1.5rem] text-sm ${inputTextColor} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all`}
               />
+              <div className="space-y-2 pt-2 border-t border-gray-100/10">
+                <div className="flex items-center gap-2 px-2">
+                  <Globe size={14} className={isDarkMode ? 'text-indigo-400' : 'text-indigo-600'} />
+                  <label className={`text-[9px] font-black uppercase tracking-[0.2em] ${labelColor}`}>Facebook / Instagram Profile Link</label>
+                </div>
+                <input
+                  type="url"
+                  placeholder="https://facebook.com/yourprofile"
+                  required
+                  value={formData.socialLink}
+                  onChange={(e) => setFormData({...formData, socialLink: e.target.value})}
+                  className={`block w-full px-6 py-5 ${inputBg} rounded-[1.5rem] text-sm ${inputTextColor} placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all`}
+                />
+                <p className="text-[10px] text-gray-400 px-2 italic font-medium leading-tight">⚠️ Required for identity verification to prevent bogus bookings.</p>
+              </div>
             </div>
           </div>
 

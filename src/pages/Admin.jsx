@@ -555,7 +555,12 @@ export default function Admin({ defaultTab = 'bookings' }) {
                           <td className="py-6 px-8">
                             <p className={`font-bold text-[15px] ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{booking.eventName || 'Unnamed Event'}</p>
                             <p className={`text-[12px] font-bold mt-1 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>👤 {booking.customerName}</p>
-                            <p className={`text-[11px] font-black uppercase mt-2 inline-block px-3 py-1 rounded-full border transition-all ${isDarkMode ? 'text-indigo-400 bg-indigo-900/30 border-indigo-800' : 'text-indigo-600 bg-indigo-50 border-indigo-100'}`}>{booking.packageName}</p>
+                            {booking.socialLink ? (
+                              <a href={booking.socialLink} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className={`inline-flex items-center gap-1 text-[10px] font-bold mt-1 px-2.5 py-0.5 rounded-md border ${isDarkMode ? 'bg-indigo-950/40 border-indigo-800 text-indigo-300 hover:underline' : 'bg-indigo-50 border-indigo-200 text-indigo-600 hover:underline'}`}>
+                                🌐 Verify FB/IG
+                              </a>
+                            ) : null}
+                            <div className="mt-2"><p className={`text-[11px] font-black uppercase inline-block px-3 py-1 rounded-full border transition-all ${isDarkMode ? 'text-indigo-400 bg-indigo-900/30 border-indigo-800' : 'text-indigo-600 bg-indigo-50 border-indigo-100'}`}>{booking.packageName}</p></div>
                           </td>
                           <td className="py-6 px-4">
                             <span className={`px-4 py-1.5 rounded-full text-[11px] font-bold ${getStatusStyle(booking.status)}`}>
@@ -846,6 +851,24 @@ export default function Admin({ defaultTab = 'bookings' }) {
                   <div>
                     <p className={`text-[11px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Venue</p>
                     <p className={`font-bold ${textColor}`}>{selectedBooking.location}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <User size={20} className="text-slate-400 mt-1" />
+                  <div className="min-w-0 flex-1">
+                    <p className={`text-[11px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Social Media Profile (Verification)</p>
+                    {selectedBooking.socialLink ? (
+                      <a 
+                        href={selectedBooking.socialLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className={`inline-flex items-center gap-1.5 font-bold text-xs mt-1.5 px-4 py-2 rounded-xl border transition-all truncate max-w-full ${isDarkMode ? 'bg-indigo-950/40 border-indigo-800 text-indigo-300 hover:bg-indigo-900/50' : 'bg-indigo-50 border-indigo-200 text-indigo-600 hover:bg-indigo-100'}`}
+                      >
+                        🌐 View Profile Link
+                      </a>
+                    ) : (
+                      <p className={`font-bold text-xs italic mt-1 ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>No profile link provided (Legacy Booking)</p>
+                    )}
                   </div>
                 </div>
               </div>
