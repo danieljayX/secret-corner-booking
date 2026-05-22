@@ -42,7 +42,7 @@ export default function PackageDetails() {
   const sectionLabel = isDarkMode ? 'text-gray-600' : 'text-gray-400';
 
   return (
-    <div className={`min-h-screen ${bg} pb-24 font-['Inter'] transition-colors duration-300 ${textColor}`}>
+    <div className={`w-full min-h-full ${bg} pb-16 font-['Inter'] transition-colors duration-300 flex-shrink-0 ${textColor}`}>
       {/* Header */}
       <div className={`px-6 pt-12 pb-6 flex items-center justify-between sticky top-0 ${headerBg} backdrop-blur-xl z-30 border-b ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
         <button 
@@ -70,7 +70,10 @@ export default function PackageDetails() {
             <h1 className={`text-3xl font-black ${colorClass} uppercase italic tracking-widest leading-none ${isDarkMode ? 'drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]' : ''}`}>
               {pkg.name}
             </h1>
-            <p className={`text-2xl font-black tracking-tight ${textColor}`}>₱{pkg.price.toLocaleString()}</p>
+            <p className={`inline-flex items-baseline gap-1.5 tabular-nums tracking-normal ${textColor}`}>
+              <span className="text-lg font-black shrink-0 leading-none">₱</span>
+              <span className="text-2xl font-black leading-none">{pkg.price.toLocaleString()}</span>
+            </p>
           </div>
         </div>
 

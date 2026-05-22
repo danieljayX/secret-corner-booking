@@ -23,7 +23,7 @@ export default function About() {
   ];
 
   return (
-    <div className={`min-h-full pb-28 font-['Inter',sans-serif] transition-colors duration-300 ${bg} ${textColor}`}>
+    <div className={`w-full min-h-full pb-16 font-['Inter',sans-serif] transition-colors duration-300 flex-shrink-0 ${bg} ${textColor}`}>
 
       {/* Hero */}
       <div className={`relative px-6 pt-12 pb-10 flex flex-col items-center text-center overflow-hidden`}>

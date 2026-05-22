@@ -11,7 +11,7 @@ export default function OrderConfirmation() {
   const latestBooking = myBookings.length > 0 ? myBookings[0] : null;
 
   return (
-    <div className="h-full flex flex-col items-center p-6 bg-gray-50 dark:bg-[#050505] relative overflow-hidden transition-colors">
+    <div className="w-full min-h-full flex flex-col items-center p-6 pb-16 bg-gray-50 dark:bg-[#050505] relative transition-colors flex-shrink-0">
       {/* Background glow */}
       <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-orange-500/5 dark:from-orange-500/10 via-transparent to-transparent pointer-events-none"></div>
 

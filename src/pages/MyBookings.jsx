@@ -3,9 +3,10 @@ import { BookingContext } from '../context/BookingContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { Ticket, Calendar, Clock, MapPin, Package, AlertCircle, Edit2, X, User, Phone, FileText, Save } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { getTodayString, getNowTimeString, isPastDate, isPastDateTime } from '../utils/dates';
 
 export default function MyBookings() {
-  const { myBookings, editBooking } = useContext(BookingContext);
+  const { myBookings, editBooking, bookedDates } = useContext(BookingContext);
   const { isDarkMode } = useContext(ThemeContext);
   const navigate = useNavigate();
 
@@ -31,7 +32,23 @@ export default function MyBookings() {
     setSaveSuccess(false);
   };
 
+  const today = getTodayString();
+
   const handleSave = () => {
+    if (isPastDate(editForm.date)) {
+      alert('Cannot set a past date. Please choose today or a future date.');
+      return;
+    }
+    if (isPastDateTime(editForm.date, editForm.time)) {
+      alert('Cannot set a time that has already passed.');
+      return;
+    }
+    const dateTakenByOther =
+      bookedDates.includes(editForm.date) && editForm.date !== editingBooking.date;
+    if (dateTakenByOther) {
+      alert('This date is already booked. Please choose another date.');
+      return;
+    }
     editBooking(editingBooking.id, { ...editingBooking, ...editForm });
     setSaveSuccess(true);
     setTimeout(() => {
@@ -53,7 +70,7 @@ export default function MyBookings() {
   const modalBg = isDarkMode ? 'bg-[#0a0a1a] border-white/10' : 'bg-white border-gray-100';
 
   return (
-    <div className={`min-h-full ${bg} pb-24 font-['Inter'] transition-colors duration-300 ${textColor}`}>
+    <div className={`w-full min-h-full ${bg} pb-16 font-['Inter'] transition-colors duration-300 flex-shrink-0 ${textColor}`}>
 
       {/* Edit Modal */}
       {editingBooking && (
@@ -140,6 +157,7 @@ export default function MyBookings() {
                   </label>
                   <input
                     type="date"
+                    min={today}
                     value={editForm.date}
                     onChange={e => setEditForm({...editForm, date: e.target.value})}
                     className={`w-full px-4 py-3 rounded-2xl border text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${inputBg}`}
@@ -152,6 +170,7 @@ export default function MyBookings() {
                   </label>
                   <input
                     type="time"
+                    min={editForm.date === today ? getNowTimeString() : undefined}
                     value={editForm.time}
                     onChange={e => setEditForm({...editForm, time: e.target.value})}
                     className={`w-full px-4 py-3 rounded-2xl border text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${inputBg}`}

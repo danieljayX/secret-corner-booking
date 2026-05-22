@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BookingContext } from '../context/BookingContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { Martini, Coffee, UtensilsCrossed, ChevronRight, Sparkles, Sun, Moon, Star } from 'lucide-react';
+import PageShell from '../components/PageShell';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -58,10 +59,17 @@ export default function Home() {
   const headingColor = isDarkMode ? 'text-white' : 'text-gray-900';
   const sectionLabel = isDarkMode ? 'text-white' : 'text-gray-900';
 
+  const formatPrice = (price) => (
+    <span className="inline-flex items-baseline gap-1.5 tabular-nums tracking-normal">
+      <span className="text-lg font-black shrink-0 leading-none">₱</span>
+      <span className="text-2xl font-black leading-none">{price.toLocaleString()}</span>
+    </span>
+  );
+
   return (
-    <div className={`flex flex-col min-h-screen pb-24 font-['Inter',sans-serif] transition-all duration-300 relative overflow-hidden ${bg} ${headingColor}`}>
+    <PageShell className={`font-['Inter',sans-serif] transition-all duration-300 relative ${bg} ${headingColor} ${selectedCategory ? 'pb-16' : 'pb-12'}`}>
       {/* Subtle Background Glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-pink-500/10 via-purple-500/5 to-transparent blur-[100px] pointer-events-none rounded-full"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-pink-500/10 via-purple-500/5 to-transparent blur-[100px] pointer-events-none rounded-full -z-0"></div>
 
       {!selectedCategory ? (
         <div className="animate-in fade-in duration-700 max-w-lg mx-auto w-full">
@@ -160,7 +168,7 @@ export default function Home() {
           </div>
 
           {/* Photo Gallery Section */}
-          <div className="px-6 pt-10 pb-4 space-y-4 relative z-20">
+          <div className="px-6 pt-10 pb-10 space-y-4 relative z-20">
             <div className="flex items-center justify-between ml-1">
               <h2 className={`text-base font-black tracking-tight ${sectionLabel}`}>📸 Curated Gallery</h2>
               <span className={`text-[10px] font-black uppercase tracking-widest ${isDarkMode ? 'text-pink-400' : 'text-pink-500'}`}>Recent Events</span>
@@ -197,7 +205,7 @@ export default function Home() {
 
       ) : (
         /* Package Listing View */
-        <div className="px-6 pt-10 animate-in slide-in-from-right duration-500 max-w-lg mx-auto w-full">
+        <div className="px-6 pt-10 pb-20 animate-in slide-in-from-right duration-500 max-w-lg mx-auto w-full relative z-10">
           <button
             onClick={() => setSelectedCategory(null)}
             className={`mb-8 inline-flex items-center gap-3 px-4 py-2.5 rounded-full border backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 group
@@ -214,21 +222,21 @@ export default function Home() {
             <span className="text-[10px] font-black uppercase tracking-[0.2em] pr-1">Back to Services</span>
           </button>
 
-          <div className="flex items-center justify-between mb-6 px-1">
-            <h2 className={`text-xl font-black uppercase tracking-widest ${headingColor}`}>
+          <div className="flex flex-col gap-3 mb-6 px-1 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className={`text-lg font-black uppercase tracking-wide leading-tight ${headingColor}`}>
               {categories.find(c => c.id === selectedCategory)?.title} Packages
             </h2>
-            <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${isDarkMode ? 'bg-white/5 border-white/10 text-pink-400' : 'bg-pink-50 border-pink-100 text-pink-600'}`}>
+            <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border w-fit shrink-0 ${isDarkMode ? 'bg-white/5 border-white/10 text-pink-400' : 'bg-pink-50 border-pink-100 text-pink-600'}`}>
               Premium Selection
             </span>
           </div>
 
-          <div className="grid grid-cols-1 gap-5">
+          <div className="grid grid-cols-1 gap-4">
             {getActivePackages().map((pkg) => (
               <div
                 key={pkg.id}
                 onClick={() => navigate(`/package/${pkg.id}`)}
-                className={`group relative rounded-[2.5rem] p-7 transition-all duration-500 cursor-pointer shadow-xl overflow-hidden border backdrop-blur-xl
+                className={`group relative rounded-[2rem] p-5 transition-all duration-500 cursor-pointer shadow-xl border backdrop-blur-xl
                   ${isDarkMode
                     ? 'bg-[#0a0a10]/90 border-white/10 hover:border-pink-500/40 hover:shadow-[0_20px_40px_rgba(236,72,153,0.15)]'
                     : 'bg-white/90 border-pink-100 hover:border-pink-300 hover:shadow-[0_20px_45px_rgba(236,72,153,0.15)]'}`}
@@ -237,7 +245,7 @@ export default function Home() {
                 <div className={`absolute -right-16 -top-16 w-48 h-48 ${pkg.bgClass} blur-[80px] ${isDarkMode ? 'opacity-25' : 'opacity-15'} transition-opacity duration-500 group-hover:opacity-40`}></div>
 
                 <div className="relative z-10">
-                  <div className="flex justify-between items-start mb-6 gap-4">
+                  <div className="flex justify-between items-start mb-4 gap-3">
                     <div>
                       <div className="flex items-center gap-1.5 mb-2">
                         <Star size={12} className="text-yellow-500" fill="currentColor" />
@@ -246,8 +254,8 @@ export default function Home() {
                       <h3 className={`text-xl font-black ${pkg.colorClass} uppercase tracking-widest leading-none mb-2`}>
                         {pkg.name}
                       </h3>
-                      <p className={`text-2xl font-black tracking-tight ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                        ₱{pkg.price.toLocaleString()}
+                      <p className={isDarkMode ? 'text-white' : 'text-gray-900'}>
+                        {formatPrice(pkg.price)}
                       </p>
                     </div>
                     
@@ -259,7 +267,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className={`space-y-3 pt-5 border-t ${isDarkMode ? 'border-white/10' : 'border-gray-100'}`}>
+                  <div className={`space-y-2.5 pt-4 border-t ${isDarkMode ? 'border-white/10' : 'border-gray-100'}`}>
                     {pkg.features.map((feature, idx) => (
                       <div key={idx} className="flex items-center gap-3.5">
                         <div className={`w-2 h-2 rounded-full ${pkg.bgClass.replace('/10', '')}`}></div>
@@ -275,6 +283,6 @@ export default function Home() {
           </div>
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }

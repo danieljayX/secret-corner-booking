@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
 
-export default function Navbar() {
+export default function Navbar({ className = '' }) {
   const { isDarkMode } = useContext(ThemeContext);
   const location = useLocation();
 
@@ -15,10 +15,10 @@ export default function Navbar() {
   ];
 
   const navBg = isDarkMode ? 'bg-black border-white/5' : 'bg-white border-gray-100 shadow-[0_-10px_40px_rgba(0,0,0,0.03)]';
-  const labelColor = isDarkMode ? 'text-gray-700' : 'text-gray-400';
+  const labelColor = isDarkMode ? 'text-gray-500' : 'text-gray-400';
 
   return (
-    <nav className={`h-20 ${navBg} border-t flex items-center justify-around px-4 relative z-50 transition-all duration-300`}>
+    <nav className={`h-20 shrink-0 ${navBg} border-t flex items-center justify-around px-4 relative z-50 transition-all duration-300 ${className}`}>
       {navItems.map((item) => {
         const Icon = item.icon;
         const isExact = location.pathname === item.to;
@@ -33,7 +33,7 @@ export default function Navbar() {
             <div className={`p-2 transition-all duration-300 ${
               isActive 
                 ? (isDarkMode ? item.activeColorDark : item.activeColorLight) 
-                : (isDarkMode ? 'text-gray-600' : 'text-gray-300')
+                : (isDarkMode ? 'text-gray-500' : 'text-gray-400')
             }`}>
               <Icon size={26} strokeWidth={2.5} />
             </div>

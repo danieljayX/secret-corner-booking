@@ -11,7 +11,11 @@ body {
   background-color: #030014;
   color: #ffffff;
   -webkit-font-smoothing: antialiased;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
+}
+
+#root {
+  min-height: 100dvh;
 }
 
 /* Base Styles */

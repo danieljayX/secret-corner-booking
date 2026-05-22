@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import { Martini, ChevronRight, Sun, Moon, Sparkles, Star, ShieldCheck } from 'lucide-react';
+import PageShell from '../components/PageShell';
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export default function Landing() {
   const headingColor = isDarkMode ? 'text-white' : 'text-gray-900';
 
   return (
-    <div className={`flex flex-col min-h-screen px-8 py-10 animate-in fade-in duration-700 relative font-['Inter',sans-serif] overflow-hidden ${bg} ${headingColor}`}>
+    <PageShell className={`flex flex-col px-8 py-10 animate-in fade-in duration-700 relative font-['Inter',sans-serif] ${bg} ${headingColor}`}>
       {/* Ambient Background Glows */}
       <div className="absolute top-[-10%] left-[-20%] w-[500px] h-[500px] bg-gradient-to-tr from-pink-500/20 via-purple-500/10 to-transparent blur-[120px] pointer-events-none rounded-full"></div>
       <div className="absolute bottom-[-10%] right-[-20%] w-[500px] h-[500px] bg-gradient-to-bl from-indigo-500/20 via-pink-500/10 to-transparent blur-[120px] pointer-events-none rounded-full"></div>
@@ -84,6 +85,6 @@ export default function Landing() {
           </div>
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }

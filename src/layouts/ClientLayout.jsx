@@ -26,13 +26,13 @@ export default function ClientLayout() {
         {/* Top Decorative Glow Bar */}
         <div className={`absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent ${isDarkMode ? 'via-violet-500' : 'via-indigo-400'} to-transparent opacity-50`}></div>
 
-        {/* Scrollable Content Area */}
-        <div className="relative z-10 flex-1 overflow-y-auto flex flex-col scroll-smooth">
+        {/* Scrollable Content Area — block flow so pages are not flex-shrunk/clipped */}
+        <main className="relative z-10 flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth overscroll-y-contain [-webkit-overflow-scrolling:touch]">
           <Outlet />
-        </div>
+        </main>
 
-        {/* Fixed Navbar at the bottom */}
-        {!isLanding && <Navbar />}
+        {/* Bottom navigation */}
+        {!isLanding && <Navbar className="shrink-0" />}
       </div>
     </div>
   );

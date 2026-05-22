@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BookingContext } from '../context/BookingContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { ChevronLeft, Calendar as CalendarIcon, MapPin, User, ShieldCheck, ArrowRight, Globe } from 'lucide-react';
+import { getTodayString, getNowTimeString, isPastDate, isPastDateTime } from '../utils/dates';
 
 export default function Booking() {
   const navigate = useNavigate();
@@ -27,10 +28,20 @@ export default function Booking() {
     window.scrollTo(0, 0);
   }, [currentBooking, navigate]);
 
+  const today = getTodayString();
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (isPastDate(formData.date)) {
+      alert('Cannot book a past date. Please choose today or a future date.');
+      return;
+    }
+    if (isPastDateTime(formData.date, formData.time)) {
+      alert('Cannot book a time that has already passed. Please choose a later time.');
+      return;
+    }
     if (bookedDates.includes(formData.date)) {
-      alert("This date is already booked! Please select another date.");
+      alert('This date is already booked! Please select another date.');
       return;
     }
     confirmBooking({
@@ -41,6 +52,13 @@ export default function Booking() {
   };
 
   const isDateBooked = (date) => bookedDates.includes(date);
+  const isDatePast = (date) => isPastDate(date);
+  const isTimePast = () => isPastDateTime(formData.date, formData.time);
+  const isSubmitDisabled =
+    !formData.date ||
+    isDateBooked(formData.date) ||
+    isDatePast(formData.date) ||
+    isTimePast();
 
   if (!currentBooking) return null;
 
@@ -56,7 +74,7 @@ export default function Booking() {
   const sectionLabelColor = isDarkMode ? 'text-gray-400' : 'text-gray-500';
 
   return (
-    <div className={`min-h-screen ${bg} pb-24 font-['Inter'] transition-colors duration-300 ${textColor}`}>
+    <div className={`w-full min-h-full ${bg} pb-16 font-['Inter'] transition-colors duration-300 flex-shrink-0 ${textColor}`}>
       {/* Header */}
       <div className={`px-6 pt-12 pb-6 flex items-center justify-between sticky top-0 ${headerBg} backdrop-blur-xl z-30 border-b ${headerBorder}`}>
         <button 
@@ -95,16 +113,25 @@ export default function Booking() {
                   <input
                     type="date"
                     required
+                    min={today}
                     value={formData.date}
                     onChange={(e) => setFormData({...formData, date: e.target.value})}
                     className={`block w-full px-6 py-5 ${inputBg} rounded-[1.5rem] text-base font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all ${
-                      isDateBooked(formData.date) ? 'border-red-500 text-red-400' : `${inputTextColor}`
+                      isDateBooked(formData.date) || isDatePast(formData.date)
+                        ? 'border-red-500 text-red-400'
+                        : inputTextColor
                     }`}
                     style={{ colorScheme: isDarkMode ? 'dark' : 'light' }}
                   />
                 </div>
-                {isDateBooked(formData.date) && (
+                {isDatePast(formData.date) && (
+                  <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest ml-4 mt-2">❌ Past dates cannot be booked.</p>
+                )}
+                {isDateBooked(formData.date) && !isDatePast(formData.date) && (
                   <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest ml-4 mt-2">❌ This date is already booked!</p>
+                )}
+                {!formData.date && (
+                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest ml-4 mt-2">Only today and future dates are available.</p>
                 )}
               </div>
 
@@ -113,11 +140,17 @@ export default function Booking() {
                 <input
                   type="time"
                   required
+                  min={formData.date === today ? getNowTimeString() : undefined}
                   value={formData.time}
                   onChange={(e) => setFormData({...formData, time: e.target.value})}
-                  className={`block w-full px-6 py-5 ${inputBg} rounded-[1.5rem] text-base font-bold ${inputTextColor} focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all`}
+                  className={`block w-full px-6 py-5 ${inputBg} rounded-[1.5rem] text-base font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all ${
+                    isTimePast() ? 'border-red-500 text-red-400' : inputTextColor
+                  }`}
                   style={{ colorScheme: isDarkMode ? 'dark' : 'light' }}
                 />
+                {isTimePast() && (
+                  <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest ml-4 mt-2">❌ This time has already passed.</p>
+                )}
               </div>
             </div>
           </div>
@@ -196,7 +229,7 @@ export default function Booking() {
             
             <button
               type="submit"
-              disabled={isDateBooked(formData.date)}
+              disabled={isSubmitDisabled}
               className={`w-full ${isDarkMode ? 'bg-gradient-to-r from-violet-600 to-indigo-600 shadow-[0_0_30px_rgba(139,92,246,0.3)]' : 'bg-indigo-600 shadow-[0_8px_30px_rgba(79,70,229,0.2)]'} text-white font-black uppercase tracking-[0.2em] py-6 rounded-[2rem] hover:opacity-90 transition-all flex items-center justify-center gap-4 group active:scale-95`}
             >
               <span className="drop-shadow-lg">BOOK MY EVENT NOW</span>
