@@ -29,7 +29,7 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <BookingProvider>
-          <Router>
+          <Router basename={import.meta.env.BASE_URL}>
             <Routes>
               {/* Client Routes (Mobile View) */}
               <Route element={<ClientLayout />}>
