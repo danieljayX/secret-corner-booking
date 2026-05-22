@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
 
 export const BookingContext = createContext();
 
@@ -142,7 +143,7 @@ const initialPackages = [
 
 export function BookingProvider({ children }) {
   const [currentBooking, setCurrentBooking] = useState(null);
-  const loading = false;
+  const [loading, setLoading] = useState(true);
 
   const [packages, setPackages] = useState(() => {
     const saved = localStorage.getItem('packages');
@@ -157,105 +158,142 @@ export function BookingProvider({ children }) {
     return initialPackages;
   });
 
-  const [bookedDates, setBookedDates] = useState(() => {
-    const saved = localStorage.getItem('bookedDates');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [bookedDates, setBookedDates] = useState([]);
+  const [myBookings, setMyBookings] = useState([]);
 
-  const [myBookings, setMyBookings] = useState(() => {
-    const saved = localStorage.getItem('myBookings');
-    if (saved) return JSON.parse(saved);
-    
-    // Default dummy data matching the user's design image
-    return [
-      {
-        id: 1,
-        customerName: 'Juan Dela Cruz',
-        eventName: 'Beach Resort',
-        packageName: 'MOBILE BAR: PREMIUM',
-        packagePrice: 14999,
-        location: 'Beach Resort, Mactan',
-        date: '2024-05-20',
-        time: '14:00',
-        status: 'Confirmed',
-        customerPhone: '09123456789',
-        socialLink: 'https://facebook.com/juandelacruz'
-      },
-      {
-        id: 2,
-        customerName: 'Maria Santos',
-        eventName: 'City Hotel',
-        packageName: 'COFFEE BAR: STANDARD',
-        packagePrice: 9999,
-        location: 'City Hotel, Cebu City',
-        date: '2024-05-21',
-        time: '15:00',
-        status: 'Pending',
-        customerPhone: '09223334444',
-        socialLink: 'https://instagram.com/mariasantos'
-      },
-      {
-        id: 3,
-        customerName: 'Robert Garcia',
-        eventName: 'Mountain Cabin',
-        packageName: 'PICA PICA: DELUXE',
-        packagePrice: 11999,
-        location: 'Mountain Cabin, Busay',
-        date: '2024-05-18',
-        time: '11:00',
-        status: 'Declined',
-        customerPhone: '09445556666',
-        socialLink: 'https://facebook.com/robertgarcia'
+  // Fetch bookings on mount from Supabase
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('bookings')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        setMyBookings(data || []);
+        
+        // Populate booked dates (exclude declined or cancelled ones)
+        const dates = (data || [])
+          .filter(b => b.status !== 'Declined' && b.status !== 'Cancelled')
+          .map(b => b.date)
+          .filter(Boolean);
+        setBookedDates([...new Set(dates)]);
+      } catch (err) {
+        console.error('Error fetching bookings from Supabase:', err);
+      } finally {
+        setLoading(false);
       }
-    ];
-  });
+    };
+
+    fetchBookings();
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('packages', JSON.stringify(packages));
   }, [packages]);
 
-  useEffect(() => {
-    localStorage.setItem('bookedDates', JSON.stringify(bookedDates));
-  }, [bookedDates]);
+  const confirmBooking = async (bookingDetails) => {
+    try {
+      setLoading(true);
+      const newBooking = {
+        customerName: bookingDetails.customerName,
+        eventName: bookingDetails.eventName,
+        packageName: bookingDetails.packageName,
+        packagePrice: bookingDetails.packagePrice,
+        location: bookingDetails.location,
+        date: bookingDetails.date,
+        time: bookingDetails.time,
+        status: 'Pending',
+        customerPhone: bookingDetails.customerPhone,
+        socialLink: bookingDetails.socialLink,
+        specialRequests: bookingDetails.specialRequests || ''
+      };
 
-  useEffect(() => {
-    localStorage.setItem('myBookings', JSON.stringify(myBookings));
-  }, [myBookings]);
+      const { data, error } = await supabase
+        .from('bookings')
+        .insert([newBooking])
+        .select()
+        .single();
 
-  const confirmBooking = (bookingDetails) => {
-    const newBooking = {
-      ...bookingDetails,
-      id: Date.now(),
-      status: 'Pending',
-      created_at: new Date().toISOString()
-    };
-    setMyBookings([newBooking, ...myBookings]);
-    setBookedDates([...bookedDates, bookingDetails.date]);
-    setCurrentBooking(null);
+      if (error) throw error;
+
+      setMyBookings(prev => [data, ...prev]);
+      setBookedDates(prev => [...new Set([...prev, data.date])]);
+      setCurrentBooking(null);
+    } catch (err) {
+      console.error('Error saving booking to Supabase:', err);
+      alert('Failed to save booking. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateBookingStatus = (id, newStatus) => {
-    setMyBookings(prev => prev.map(booking => {
-      if (booking.id === id) {
-        if (newStatus === 'Declined' || newStatus === 'Cancelled') {
-          setBookedDates(dates => dates.filter(date => date !== booking.date));
+  const updateBookingStatus = async (id, newStatus) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: newStatus })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setMyBookings(prev => prev.map(booking => {
+        if (booking.id === id) {
+          if (newStatus === 'Declined' || newStatus === 'Cancelled') {
+            setBookedDates(dates => dates.filter(date => date !== booking.date));
+          } else if (newStatus === 'Confirmed' || newStatus === 'Pending') {
+            setBookedDates(dates => [...new Set([...dates, booking.date])]);
+          }
+          return { ...booking, status: newStatus };
         }
-        return { ...booking, status: newStatus };
-      }
-      return booking;
-    }));
+        return booking;
+      }));
+    } catch (err) {
+      console.error('Error updating booking status in Supabase:', err);
+    }
   };
 
-  const editBooking = (id, updatedBooking) => {
-    setMyBookings(prev => prev.map(booking => {
-      if (booking.id === id) {
-        if (booking.date !== updatedBooking.date) {
-          setBookedDates(dates => [...dates.filter(d => d !== booking.date), updatedBooking.date]);
+  const editBooking = async (id, updatedBooking) => {
+    try {
+      const dbBooking = {
+        customerName: updatedBooking.customerName,
+        eventName: updatedBooking.eventName,
+        location: updatedBooking.location,
+        date: updatedBooking.date,
+        time: updatedBooking.time,
+        specialRequests: updatedBooking.specialRequests || '',
+        customerPhone: updatedBooking.customerPhone,
+        socialLink: updatedBooking.socialLink
+      };
+
+      const { error } = await supabase
+        .from('bookings')
+        .update(dbBooking)
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setMyBookings(prev => prev.map(booking => {
+        if (booking.id === id) {
+          if (booking.date !== updatedBooking.date) {
+            setBookedDates(dates => {
+              const filtered = dates.filter(d => d !== booking.date);
+              if (updatedBooking.status !== 'Declined' && updatedBooking.status !== 'Cancelled') {
+                filtered.push(updatedBooking.date);
+              }
+              return [...new Set(filtered)];
+            });
+          }
+          return { ...booking, ...updatedBooking };
         }
-        return updatedBooking;
-      }
-      return booking;
-    }));
+        return booking;
+      }));
+    } catch (err) {
+      console.error('Error updating booking in Supabase:', err);
+    }
   };
 
   const updatePackage = (id, updatedData) => {
@@ -264,10 +302,21 @@ export function BookingProvider({ children }) {
 
   const deleteBooking = async (id) => {
     try {
-      const updated = myBookings.filter(b => b.id !== id);
-      setMyBookings(updated);
+      const bookingToDelete = myBookings.find(b => b.id === id);
+
+      const { error } = await supabase
+        .from('bookings')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      if (bookingToDelete) {
+        setBookedDates(dates => dates.filter(date => date !== bookingToDelete.date));
+      }
+      setMyBookings(prev => prev.filter(b => b.id !== id));
     } catch (err) {
-      console.error("Error deleting booking:", err);
+      console.error("Error deleting booking in Supabase:", err);
     }
   };
 

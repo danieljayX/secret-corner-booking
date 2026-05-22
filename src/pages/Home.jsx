@@ -179,12 +179,12 @@ export default function Home() {
               {[
                 { url: '/work1.jpg', tall: true },
                 { url: '/work2.jpg', tall: true },
-                { url: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=400&q=80', tall: false },
-                { url: 'https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=400&q=80', tall: false },
-                { url: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=400&q=80', tall: true },
-                { url: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=400&q=80', tall: false },
-                { url: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=400&q=80', tall: true },
-                { url: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=400&q=80', tall: false },
+                { url: '/mobile-bar.png', tall: false },
+                { url: '/coffee.png', tall: false },
+                { url: '/pica-pica.png', tall: true },
+                { url: '/work2.jpg', tall: false },
+                { url: '/work1.jpg', tall: true },
+                { url: '/coffee.png', tall: false },
               ].map((photo, i) => (
                 <div
                   key={i}
