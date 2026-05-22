@@ -156,7 +156,6 @@ export default function Booking() {
                 {formData.date && !isDateBooked(formData.date) && !isDatePast(formData.date) && (
                   <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest ml-4 mt-2">✓ {formData.date} — Available!</p>
                 )}
-                )}
                 {!formData.date && (
                   <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest ml-4 mt-2">Only today and future dates are available.</p>
                 )}
