@@ -35,16 +35,17 @@ export default function Checkout() {
   const handleSubmit = (e) => {
     e.preventDefault();
     confirmBooking({
-      package_id: pkg.id,
-      package_name: pkg.name,
-      category: pkg.category,
-      price: pkg.price,
+      packageName: pkg.name,
+      packagePrice: pkg.price,
       date,
-      name: formData.name,
-      phone: formData.phone,
-      address: formData.address,
+      customerName: formData.name,
+      customerPhone: formData.phone,
+      location: formData.address,
       time: formData.time,
-      notes: formData.notes
+      specialRequests: formData.notes,
+      eventName: pkg.name,
+      socialLink: '',
+      category: pkg.category
     });
     navigate('/confirmation');
   };
