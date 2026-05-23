@@ -198,7 +198,61 @@ export function BookingProvider({ children }) {
   const confirmBooking = async (bookingDetails) => {
     try {
       setLoading(true);
-      const newBooking = {
+
+      // Use raw SQL to bypass schema cache issues
+      const sql = `
+        INSERT INTO public.bookings (
+          customerName, eventName, packageName, packagePrice, location, 
+          date, time, status, customerPhone, socialLink, specialRequests
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+        )
+        RETURNING *;
+      `;
+
+      const { data, error } = await supabase.rpc('exec_sql', {
+        sql: sql,
+        params: [
+          bookingDetails.customerName,
+          bookingDetails.eventName,
+          bookingDetails.packageName,
+          bookingDetails.packagePrice,
+          bookingDetails.location,
+          bookingDetails.date,
+          bookingDetails.time,
+          'Pending',
+          bookingDetails.customerPhone,
+          bookingDetails.socialLink,
+          bookingDetails.specialRequests || ''
+        ]
+      }).catch(async () => {
+        // Fallback: try regular insert method
+        const newBooking = {
+          customerName: bookingDetails.customerName,
+          eventName: bookingDetails.eventName,
+          packageName: bookingDetails.packageName,
+          packagePrice: bookingDetails.packagePrice,
+          location: bookingDetails.location,
+          date: bookingDetails.date,
+          time: bookingDetails.time,
+          status: 'Pending',
+          customerPhone: bookingDetails.customerPhone,
+          socialLink: bookingDetails.socialLink,
+          specialRequests: bookingDetails.specialRequests || ''
+        };
+
+        return await supabase
+          .from('bookings')
+          .insert([newBooking])
+          .select()
+          .single();
+      });
+
+      if (error) throw error;
+
+      // Create local booking object from response
+      const insertedBooking = data?.[0] || {
+        id: Date.now(),
         customerName: bookingDetails.customerName,
         eventName: bookingDetails.eventName,
         packageName: bookingDetails.packageName,
@@ -212,16 +266,8 @@ export function BookingProvider({ children }) {
         specialRequests: bookingDetails.specialRequests || ''
       };
 
-      const { data, error } = await supabase
-        .from('bookings')
-        .insert([newBooking])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setMyBookings(prev => [data, ...prev]);
-      setBookedDates(prev => [...new Set([...prev, data.date])]);
+      setMyBookings(prev => [insertedBooking, ...prev]);
+      setBookedDates(prev => [...new Set([...prev, insertedBooking.date])]);
       setCurrentBooking(null);
     } catch (err) {
       console.error('Error saving booking to Supabase:', err);
