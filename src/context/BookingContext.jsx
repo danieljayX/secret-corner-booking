@@ -225,7 +225,10 @@ export function BookingProvider({ children }) {
       setCurrentBooking(null);
     } catch (err) {
       console.error('Error saving booking to Supabase:', err);
-      alert('Failed to save booking. Please try again.');
+      const errorMsg = err?.message || err?.error_description || 'Unknown error';
+      const detailedMsg = `Failed to save booking: ${errorMsg}`;
+      console.error('Detailed error:', detailedMsg);
+      alert(detailedMsg);
     } finally {
       setLoading(false);
     }
