@@ -100,13 +100,6 @@ export default function Login() {
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </button>
         </form>
-
-        <button
-          onClick={() => navigate('/')}
-          className={`w-full mt-8 text-[10px] font-black uppercase tracking-widest transition-colors ${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-400 hover:text-indigo-600'}`}
-        >
-          ← Return to Customer Site
-        </button>
       </div>
     </div>
   );
