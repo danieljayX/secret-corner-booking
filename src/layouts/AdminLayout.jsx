@@ -236,12 +236,6 @@ export default function AdminLayout() {
             <button onClick={toggleTheme} className={`p-2 rounded-xl border transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-yellow-400' : 'bg-slate-50 border-slate-200 text-indigo-600'}`}>
               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
-            <div className="relative">
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-[10px] text-white font-black border-2 border-white z-10">!</div>
-              <button className={`p-2 rounded-xl ${isDarkMode ? 'text-white bg-slate-800' : 'text-slate-800 bg-slate-50'}`}>
-                 <Bell size={20} strokeWidth={2.5} />
-              </button>
-            </div>
           </div>
         </div>
 
