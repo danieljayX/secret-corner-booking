@@ -312,14 +312,23 @@ export function BookingProvider({ children }) {
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase delete error:", error);
+        alert(`Failed to delete booking: ${error.message}`);
+        throw error;
+      }
 
+      // Only update local state if database delete was successful
       if (bookingToDelete) {
         setBookedDates(dates => dates.filter(date => date !== bookingToDelete.date));
       }
       setMyBookings(prev => prev.filter(b => b.id !== id));
+      
+      console.log(`Successfully deleted booking ${id} from database`);
     } catch (err) {
-      console.error("Error deleting booking in Supabase:", err);
+      console.error("Error deleting booking:", err);
+      // Don't update local state if there was an error
+      throw err;
     }
   };
 

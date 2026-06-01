@@ -1,6 +1,7 @@
 import { useState, useContext, useMemo } from 'react';
 import { BookingContext } from '../context/BookingContext';
 import { ThemeContext } from '../context/ThemeContext';
+import { ContactContext } from '../context/ContactContext';
 import { 
   Search, 
   Edit3,
@@ -21,10 +22,229 @@ import {
   ChevronRight,
   LayoutDashboard,
   HelpCircle,
-  Trash2
+  Trash2,
+  Save,
+  Phone,
+  Mail
 } from 'lucide-react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+
+// Contact Info Settings Component
+const ContactInfoSettings = ({ isDarkMode, textColor }) => {
+  const { contactInfo, updateContactInfo, loading } = useContext(ContactContext);
+  const [formData, setFormData] = useState(contactInfo);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [logoPreview, setLogoPreview] = useState(contactInfo.logo_url || null);
+
+  // Update formData when contactInfo changes
+  useMemo(() => {
+    setFormData(contactInfo);
+    setLogoPreview(contactInfo.logo_url || null);
+  }, [contactInfo]);
+
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Check file size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Image too large! Please choose an image smaller than 2MB.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Compress image
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Resize to max 300x300
+          const maxSize = 300;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > maxSize) {
+              height *= maxSize / width;
+              width = maxSize;
+            }
+          } else {
+            if (height > maxSize) {
+              width *= maxSize / height;
+              height = maxSize;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Convert to compressed base64 (quality 0.7)
+          const compressedImage = canvas.toDataURL('image/jpeg', 0.7);
+          setLogoPreview(compressedImage);
+          setFormData({...formData, logo_url: compressedImage});
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSave = async () => {
+    const result = await updateContactInfo(formData);
+    if (result.success) {
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2000);
+    } else {
+      alert('Failed to save: ' + result.error);
+    }
+  };
+
+  return (
+    <div className="space-y-8 max-w-3xl mx-auto">
+      <div>
+        <h3 className={`text-2xl font-black uppercase tracking-tight ${textColor}`}>Contact Information</h3>
+        <p className="text-slate-500 text-sm font-bold mt-2">Manage your business contact details displayed on the About page</p>
+      </div>
+      
+      <div className={`p-8 rounded-[32px] border space-y-6 transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100 shadow-sm'}`}>
+        
+        {/* Logo Upload */}
+        <div className="space-y-4 pb-6 border-b border-slate-800">
+          <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Business Logo</label>
+          <div className="flex items-center gap-6">
+            <div className={`w-24 h-24 rounded-2xl border-2 border-dashed flex items-center justify-center overflow-hidden ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-slate-200 bg-slate-50'}`}>
+              {logoPreview ? (
+                <img src={logoPreview} alt="Logo" className="w-full h-full object-cover" />
+              ) : (
+                <Package size={32} className="text-slate-500" />
+              )}
+            </div>
+            <div className="flex-1">
+              <input 
+                type="file" 
+                accept="image/*"
+                onChange={handleLogoChange}
+                className="hidden"
+                id="logo-upload"
+              />
+              <label 
+                htmlFor="logo-upload"
+                className={`inline-block px-6 py-3 border rounded-xl font-bold cursor-pointer transition-all hover:scale-105 ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white hover:bg-slate-700' : 'bg-slate-50 border-slate-200 text-slate-800 hover:bg-slate-100'}`}
+              >
+                Upload Logo
+              </label>
+              <p className="text-xs text-slate-500 mt-2 font-medium">Recommended: Square image, max 2MB</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+              <Phone size={12} /> Phone Number
+            </label>
+            <input 
+              type="text" 
+              value={formData.phone || ''} 
+              onChange={(e) => setFormData({...formData, phone: e.target.value})}
+              className={`w-full px-4 py-3 border rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+              placeholder="+63 9XX XXX XXXX"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+              <Mail size={12} /> Email Address
+            </label>
+            <input 
+              type="email" 
+              value={formData.email || ''} 
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              className={`w-full px-4 py-3 border rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+              placeholder="contact@email.com"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Facebook Page Name</label>
+            <input 
+              type="text" 
+              value={formData.facebook_page || ''} 
+              onChange={(e) => setFormData({...formData, facebook_page: e.target.value})}
+              className={`w-full px-4 py-3 border rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+              placeholder="Your Business Name"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Facebook URL</label>
+            <input 
+              type="url" 
+              value={formData.facebook_url || ''} 
+              onChange={(e) => setFormData({...formData, facebook_url: e.target.value})}
+              className={`w-full px-4 py-3 border rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+              placeholder="https://facebook.com/yourpage"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Instagram Handle</label>
+            <input 
+              type="text" 
+              value={formData.instagram_handle || ''} 
+              onChange={(e) => setFormData({...formData, instagram_handle: e.target.value})}
+              className={`w-full px-4 py-3 border rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+              placeholder="@yourbusiness"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Instagram URL</label>
+            <input 
+              type="url" 
+              value={formData.instagram_url || ''} 
+              onChange={(e) => setFormData({...formData, instagram_url: e.target.value})}
+              className={`w-full px-4 py-3 border rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+              placeholder="https://instagram.com/yourpage"
+            />
+          </div>
+
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+              <MapPin size={12} /> Location
+            </label>
+            <input 
+              type="text" 
+              value={formData.location || ''} 
+              onChange={(e) => setFormData({...formData, location: e.target.value})}
+              className={`w-full px-4 py-3 border rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+              placeholder="City, Country"
+            />
+          </div>
+        </div>
+
+        <div className={`pt-6 border-t flex justify-end ${isDarkMode ? 'border-slate-800' : 'border-slate-100'}`}>
+          {saveSuccess ? (
+            <div className="px-8 py-4 bg-emerald-500 text-white font-black rounded-2xl flex items-center gap-2">
+              <CheckCircle size={18} /> Saved Successfully!
+            </div>
+          ) : (
+            <button 
+              onClick={handleSave}
+              disabled={loading}
+              className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-xl shadow-indigo-600/20 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50"
+            >
+              <Save size={18} /> {loading ? 'Saving...' : 'Save Changes'}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const StatCard = ({ title, value, icon: Icon, color, bg, trend, isDarkMode }) => {
   return (
@@ -153,7 +373,7 @@ const MobileBookingItem = ({ booking, onClick, onDelete, isDarkMode }) => (
 );
 
 export default function Admin({ defaultTab = 'bookings' }) {
-  const { myBookings, updateBookingStatus, deleteBooking, bookedDates, packages, updatePackage } = useContext(BookingContext);
+  const { myBookings, updateBookingStatus, deleteBooking, editBooking, bookedDates, packages, updatePackage } = useContext(BookingContext);
   const { isDarkMode } = useContext(ThemeContext);
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [prevDefaultTab, setPrevDefaultTab] = useState(defaultTab);
@@ -171,6 +391,8 @@ export default function Admin({ defaultTab = 'bookings' }) {
   const [editFormData, setEditFormData] = useState({ name: '', price: '', features: [] });
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [bookingToDelete, setBookingToDelete] = useState(null);
+  const [editingBooking, setEditingBooking] = useState(null);
+  const [bookingEditForm, setBookingEditForm] = useState({});
 
   const statsData = useMemo(() => {
     const total = myBookings.length;
@@ -755,27 +977,7 @@ export default function Admin({ defaultTab = 'bookings' }) {
 
         {/* SETTINGS TAB */}
         {activeTab === 'settings' && (
-          <div className="space-y-8 max-w-2xl mx-auto">
-            <h3 className={`text-2xl font-black uppercase tracking-tight ${textColor}`}>System Settings</h3>
-            <div className={`p-8 rounded-[32px] border space-y-8 transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100 shadow-sm'}`}>
-              <div className="space-y-4">
-                <h4 className="text-xs font-black uppercase tracking-widest text-slate-500">Business Profile</h4>
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Business Name</label>
-                    <input type="text" defaultValue="Secret Corner" className={`w-full px-5 py-3.5 border rounded-2xl font-bold ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-100'}`} />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Contact Email</label>
-                    <input type="email" defaultValue="admin@secretcorner.com" className={`w-full px-5 py-3.5 border rounded-2xl font-bold ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-100'}`} />
-                  </div>
-                </div>
-              </div>
-              <div className="pt-6 border-t border-slate-800 flex justify-end">
-                <button className="px-10 py-4 bg-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-indigo-600/20 active:scale-95 transition-all">Save Configuration</button>
-              </div>
-            </div>
-          </div>
+          <ContactInfoSettings isDarkMode={isDarkMode} textColor={textColor} />
         )}
 
         {/* HELP TAB */}
@@ -891,7 +1093,25 @@ export default function Admin({ defaultTab = 'bookings' }) {
                 </button>
               </div>
             ) : (
-              <div className={`p-6 lg:p-8 border-t flex justify-end ${isDarkMode ? 'bg-slate-800/50 border-slate-800' : 'bg-slate-50/50 border-slate-50'}`}>
+              <div className={`p-6 lg:p-8 border-t flex justify-between gap-4 ${isDarkMode ? 'bg-slate-800/50 border-slate-800' : 'bg-slate-50/50 border-slate-50'}`}>
+                <button 
+                  onClick={() => { 
+                    setEditingBooking(selectedBooking);
+                    setBookingEditForm({
+                      customerName: selectedBooking.customerName,
+                      eventName: selectedBooking.eventName,
+                      customerPhone: selectedBooking.customerPhone,
+                      location: selectedBooking.location,
+                      date: selectedBooking.date,
+                      time: selectedBooking.time,
+                      specialRequests: selectedBooking.specialRequests || ''
+                    });
+                    setSelectedBooking(null);
+                  }} 
+                  className={`px-6 py-3 border font-black rounded-2xl active:scale-95 transition-all flex items-center gap-2 ${isDarkMode ? 'bg-slate-800 border-indigo-900 text-indigo-400 hover:bg-indigo-950' : 'bg-white border-indigo-200 text-indigo-600 hover:bg-indigo-50'}`}
+                >
+                  <Edit3 size={18} /> Edit Booking
+                </button>
                 <button onClick={() => { setBookingToDelete(selectedBooking); }} className={`px-6 py-3 border font-black rounded-2xl active:scale-95 transition-all flex items-center gap-2 ${isDarkMode ? 'bg-slate-800 border-rose-900 text-rose-400 hover:bg-rose-950' : 'bg-white border-rose-200 text-rose-500 hover:bg-rose-50'}`}>
                   <Trash2 size={18} /> Delete Booking
                 </button>
@@ -959,6 +1179,109 @@ export default function Admin({ defaultTab = 'bookings' }) {
                   Cancel
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT BOOKING MODAL */}
+      {editingBooking && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md" onClick={() => setEditingBooking(null)}>
+          <div className={`rounded-[32px] shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col border transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800 shadow-indigo-950/20' : 'bg-white border-slate-100 shadow-indigo-500/10'}`} onClick={e => e.stopPropagation()}>
+            <div className={`p-8 lg:p-10 border-b flex items-center justify-between ${isDarkMode ? 'bg-slate-800/50 border-slate-800' : 'bg-slate-50/50 border-slate-50'}`}>
+              <h3 className={`text-xl lg:text-2xl font-black tracking-tight italic uppercase ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                Edit Booking
+              </h3>
+              <button onClick={() => setEditingBooking(null)} className="p-2 text-slate-400 hover:text-rose-500 rounded-full transition-all">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="p-6 lg:p-8 space-y-6 overflow-y-auto max-h-[70vh]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className={`text-xs font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Event Name</label>
+                  <input 
+                    type="text" 
+                    value={bookingEditForm.eventName || ''} 
+                    onChange={(e) => setBookingEditForm({...bookingEditForm, eventName: e.target.value})}
+                    className={`w-full px-4 py-3 border rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className={`text-xs font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Customer Name</label>
+                  <input 
+                    type="text" 
+                    value={bookingEditForm.customerName || ''} 
+                    onChange={(e) => setBookingEditForm({...bookingEditForm, customerName: e.target.value})}
+                    className={`w-full px-4 py-3 border rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className={`text-xs font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Phone Number</label>
+                  <input 
+                    type="tel" 
+                    value={bookingEditForm.customerPhone || ''} 
+                    onChange={(e) => setBookingEditForm({...bookingEditForm, customerPhone: e.target.value})}
+                    className={`w-full px-4 py-3 border rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className={`text-xs font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Location</label>
+                  <input 
+                    type="text" 
+                    value={bookingEditForm.location || ''} 
+                    onChange={(e) => setBookingEditForm({...bookingEditForm, location: e.target.value})}
+                    className={`w-full px-4 py-3 border rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className={`text-xs font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Date</label>
+                  <input 
+                    type="date" 
+                    value={bookingEditForm.date || ''} 
+                    onChange={(e) => setBookingEditForm({...bookingEditForm, date: e.target.value})}
+                    className={`w-full px-4 py-3 border rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+                    style={{ colorScheme: isDarkMode ? 'dark' : 'light' }}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className={`text-xs font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Time</label>
+                  <input 
+                    type="time" 
+                    value={bookingEditForm.time || ''} 
+                    onChange={(e) => setBookingEditForm({...bookingEditForm, time: e.target.value})}
+                    className={`w-full px-4 py-3 border rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+                    style={{ colorScheme: isDarkMode ? 'dark' : 'light' }}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className={`text-xs font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Special Requests</label>
+                <textarea 
+                  rows={3}
+                  value={bookingEditForm.specialRequests || ''} 
+                  onChange={(e) => setBookingEditForm({...bookingEditForm, specialRequests: e.target.value})}
+                  className={`w-full px-4 py-3 border rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all resize-none ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'}`}
+                  placeholder="Any special instructions..."
+                />
+              </div>
+            </div>
+            <div className={`p-6 lg:p-8 border-t flex gap-4 ${isDarkMode ? 'bg-slate-800/50 border-slate-800' : 'bg-slate-50/50 border-slate-50'}`}>
+              <button 
+                onClick={() => {
+                  editBooking(editingBooking.id, { ...editingBooking, ...bookingEditForm });
+                  setEditingBooking(null);
+                }}
+                className="flex-1 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-xl shadow-indigo-600/20 active:scale-95 transition-all"
+              >
+                Save Changes
+              </button>
+              <button 
+                onClick={() => setEditingBooking(null)}
+                className={`px-8 py-4 border font-black rounded-2xl active:scale-95 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>

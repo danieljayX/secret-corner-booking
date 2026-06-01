@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import { BookingProvider } from './context/BookingContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { ContactProvider } from './context/ContactContext';
 import { useContext } from 'react';
 import ClientLayout from './layouts/ClientLayout';
 import AdminLayout from './layouts/AdminLayout';
@@ -28,6 +29,7 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
+        <ContactProvider>
         <BookingProvider>
           <Router basename={import.meta.env.BASE_URL}>
             <Routes>
@@ -69,6 +71,7 @@ function App() {
             </Routes>
           </Router>
         </BookingProvider>
+        </ContactProvider>
       </AuthProvider>
     </ThemeProvider>
   );

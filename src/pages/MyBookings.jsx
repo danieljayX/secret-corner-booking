@@ -265,16 +265,6 @@ export default function MyBookings() {
                     }`}>
                       {booking.status || 'Pending'}
                     </div>
-
-                    {/* Edit Button — only for Pending */}
-                    {booking.status === 'Pending' && (
-                      <button
-                        onClick={() => openEdit(booking)}
-                        className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest border transition-all active:scale-95 ${isDarkMode ? 'bg-indigo-500/20 border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/30' : 'bg-indigo-50 border-indigo-200 text-indigo-600 hover:bg-indigo-100'}`}
-                      >
-                        <Edit2 size={9} /> Edit
-                      </button>
-                    )}
                   </div>
                 </div>
 
