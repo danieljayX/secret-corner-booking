@@ -248,28 +248,36 @@ const ContactInfoSettings = ({ isDarkMode, textColor }) => {
 
 const StatCard = ({ title, value, icon: Icon, color, bg, trend, isDarkMode }) => {
   return (
-    <div className={`rounded-[24px] p-6 shadow-sm border flex flex-col justify-between h-full group hover:shadow-md transition-all duration-300 ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
-      <div className="flex justify-between items-center mb-4">
-        <p className={`text-[13px] font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-500'}`}>{title}</p>
-        <div className={`p-2 rounded-xl ${bg} ${color}`}>
-          <Icon size={18} />
-        </div>
-      </div>
-      <div className="flex items-end justify-between">
-        <div>
-          <h3 className={`text-[28px] font-black leading-none ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{value}</h3>
-          <div className="flex items-center gap-1 mt-2">
-            {trend > 0 ? (
-              <span className="text-[11px] font-bold text-emerald-500 flex items-center gap-0.5">
-                <TrendingUp size={10} /> {trend}%
-              </span>
-            ) : (
-              <span className="text-[11px] font-bold text-red-500 flex items-center gap-0.5">
-                <TrendingDown size={10} /> {Math.abs(trend)}%
-              </span>
-            )}
-            <span className={`text-[11px] font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>from yesterday</span>
+    <div className={`group relative overflow-hidden rounded-3xl border backdrop-blur-xl transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl ${isDarkMode ? 'bg-slate-900/60 border-slate-800/50 shadow-xl shadow-slate-950/20' : 'bg-white/80 border-slate-200/50 shadow-xl shadow-slate-900/5'}`}>
+      {/* Glassmorphism overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      
+      {/* Background glow */}
+      <div className={`absolute -top-10 -right-10 w-20 h-20 ${bg} blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-500`}></div>
+      
+      <div className="relative p-6 lg:p-8">
+        <div className="flex items-start justify-between mb-6">
+          <div className={`w-14 h-14 rounded-2xl ${bg} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+            <Icon size={24} className={`${color} drop-shadow-sm`} strokeWidth={2.5} />
           </div>
+          {trend && (
+            <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-black ${trend > 0 ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'}`}>
+              {trend > 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+              <span>{Math.abs(trend)}%</span>
+            </div>
+          )}
+        </div>
+        
+        <div className="space-y-2">
+          <h3 className={`text-3xl lg:text-4xl font-black tracking-tight ${isDarkMode ? 'text-white' : 'text-slate-900'} group-hover:scale-105 transition-transform duration-300 origin-left`}>
+            {value}
+          </h3>
+          <p className={`text-sm font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+            {title}
+          </p>
+          <p className={`text-xs font-medium ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+            from yesterday
+          </p>
         </div>
       </div>
     </div>
@@ -277,24 +285,29 @@ const StatCard = ({ title, value, icon: Icon, color, bg, trend, isDarkMode }) =>
 };
 
 const MobileStatCard = ({ title, value, icon: Icon, color, trend, bg, isDarkMode }) => (
-  <div className={`rounded-[24px] p-4 border shadow-sm flex flex-col gap-2 transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
-    <div className="flex items-center justify-between">
-      <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${bg} ${color} shrink-0`}>
-        <Icon size={18} />
+  <div className={`group relative overflow-hidden rounded-2xl border backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] ${isDarkMode ? 'bg-slate-900/60 border-slate-800/50 shadow-lg shadow-slate-950/20' : 'bg-white/80 border-slate-200/50 shadow-lg shadow-slate-900/5'}`}>
+    {/* Mobile glassmorphism overlay */}
+    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    
+    {/* Background glow */}
+    <div className={`absolute -top-6 -right-6 w-12 h-12 ${bg} blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-300`}></div>
+    
+    <div className="relative p-4 flex flex-col gap-3">
+      <div className="flex items-center justify-between">
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${bg} shadow-md group-hover:scale-110 transition-transform duration-300`}>
+          <Icon size={18} className={`${color} drop-shadow-sm`} strokeWidth={2.5} />
+        </div>
+        {trend && (
+          <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-black ${trend > 0 ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'}`}>
+            {trend > 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+            <span>{Math.abs(trend)}%</span>
+          </div>
+        )}
       </div>
-      {trend > 0 ? (
-        <span className="text-[10px] font-black text-emerald-500 flex items-center gap-0.5">
-          <TrendingUp size={10} /> {trend}%
-        </span>
-      ) : (
-        <span className="text-[10px] font-black text-rose-500 flex items-center gap-0.5">
-          <TrendingDown size={10} /> {Math.abs(trend)}%
-        </span>
-      )}
-    </div>
-    <div>
-      <h4 className={`text-[22px] font-black leading-none ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{value}</h4>
-      <p className={`text-[9px] font-black uppercase tracking-[0.1em] mt-1 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{title}</p>
+      <div>
+        <h4 className={`text-2xl font-black leading-none ${isDarkMode ? 'text-white' : 'text-slate-900'} group-hover:scale-105 transition-transform duration-300 origin-left`}>{value}</h4>
+        <p className={`text-[10px] font-bold uppercase tracking-widest mt-1 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{title}</p>
+      </div>
     </div>
   </div>
 );
