@@ -33,6 +33,9 @@ function App() {
         <BookingProvider>
           <Router basename={import.meta.env.BASE_URL}>
             <Routes>
+              {/* Login Route (No Layout) */}
+              <Route path="/login" element={<Login />} />
+
               {/* Client Routes (Mobile View) */}
               <Route element={<ClientLayout />}>
                 <Route path="/" element={<Landing />} />
@@ -44,7 +47,6 @@ function App() {
                 <Route path="/my-bookings" element={<MyBookings />} />
                 <Route path="/confirmation" element={<OrderConfirmation />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/login" element={<Login />} />
               </Route>
 
               {/* Admin Routes */}

@@ -251,33 +251,6 @@ export default function AdminLayout() {
              <Outlet />
           </div>
         </main>
-
-        {/* Mobile Bottom Nav */}
-        <div className={`lg:hidden sticky bottom-0 z-40 ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'} border-t shadow-[0_-10px_40px_rgba(0,0,0,0.04)] px-2 pb-2 transition-all`}>
-          <nav className="flex items-center justify-around py-2">
-            {bottomNavItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.end}
-                className={({ isActive }) =>
-                  `flex flex-col items-center gap-1 px-3 py-2 rounded-[18px] transition-all duration-300 ${
-                    isActive
-                      ? (isDarkMode ? 'text-indigo-400 bg-slate-800' : 'text-indigo-600 bg-indigo-50/80 shadow-sm')
-                      : 'text-slate-400'
-                  }`
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <item.icon size={20} strokeWidth={isActive ? 3 : 2} />
-                    <span className={`text-[9px] font-black uppercase tracking-wider ${isActive ? 'opacity-100' : 'opacity-50'}`}>{item.label}</span>
-                  </>
-                )}
-              </NavLink>
-            ))}
-          </nav>
-        </div>
       </div>
     </div>
   );
